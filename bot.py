@@ -1104,14 +1104,14 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # =========================================================          
-# تشغيل البوت مع التوافق التام لإصدارات بايثون الحديثة
+# تشغيل البوت بالطريقة المباشرة والمتوافقة مع بايثون الحديثة
 # =========================================================          
          
 def main():          
     if not BOT_TOKEN or BOT_TOKEN == "ضع_توكن_البوت_هنا":          
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")          
         return          
-         
+
     print("جاري تشغيل البوت مع لوحة تحكم وحذف ملفات الأدمن...")          
     app = Application.builder().token(BOT_TOKEN).build()          
          
@@ -1124,8 +1124,4 @@ def main():
     app.run_polling(drop_pending_updates=True)          
          
 if __name__ == "__main__":          
-    try:
-        asyncio.run(main())
-    except RuntimeError:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
+    main()
