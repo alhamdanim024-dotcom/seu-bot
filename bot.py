@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import asyncio
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup          
 from telegram.ext import (          
@@ -725,7 +726,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         msg_text = f"📘 {course_name}\n\nاختر الخدمة المطلوبة:"
         markup = course_services_reply_keyboard(is_math=False)
         if user_id == ADMIN_ID:
-            context.user_data["waiting_for_file"] = {"course_id": course_id, "service": "book"} # Default target or use buttons
+            context.user_data["waiting_for_file"] = {"course_id": course_id, "service": "book"}
             msg_text += "\n\n🛠️ [وضع المطور]: اضغط على الخدمة أدناه (كتاب أو ملخصات) لتفعيل الرفع المباشر لها."
         await update.message.reply_text(msg_text, reply_markup=markup)
         return
@@ -1069,10 +1070,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_main_menu(chat_id, context, context.bot)
         return
 
-    # معالجة أزرار حذف الملفات الخاصة بالمطور (الأدمن)
     if user_id == ADMIN_ID:
         if data.startswith("del_course:"):
-            # تنسيق البيانات: del_course:course_id:service:index
             parts = data.split(":")
             c_id = parts[1]
             serv = parts[2]
@@ -1080,7 +1079,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             if c_id in COURSE_FILES and serv in COURSE_FILES[c_id]:
                 if 0 <= idx < len(COURSE_FILES[c_id][serv]):
-                    removed = COURSE_FILES[c_id][serv].pop(idx)
+                    COURSE_FILES[c_id][serv].pop(idx)
                     save_course_files()
                     await query.answer("تم حذف الملف بنجاح ✅", show_alert=True)
                     await delete_message(context, chat_id, query.message.message_id)
@@ -1089,7 +1088,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
         elif data.startswith("del_guide:"):
-            # تنسيق البيانات: del_guide:guide_key:index
             parts = data.split(":")
             g_key = parts[1]
             idx = int(parts[2])
@@ -1106,7 +1104,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # =========================================================          
-# تشغيل البوت          
+# تشغيل البوت مع التوافق التام لإصدارات بايثون الحديثة
 # =========================================================          
          
 def main():          
@@ -1114,6 +1112,15 @@ def main():
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")          
         return          
          
+    # إصلاح مشكلة حلقة الأحداث (Event Loop) في بايثون الحديثة على السيرفرات
+    if sys.platform == 'win32':
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    else:
+        try:
+            asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
+        except Exception:
+            pass
+
     print("جاري تشغيل البوت مع لوحة تحكم وحذف ملفات الأدمن...")          
     app = Application.builder().token(BOT_TOKEN).build()          
          
