@@ -1112,15 +1112,6 @@ def main():
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")          
         return          
          
-    # إصلاح مشكلة حلقة الأحداث (Event Loop) في بايثون الحديثة على السيرفرات
-    if sys.platform == 'win32':
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    else:
-        try:
-            asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
-        except Exception:
-            pass
-
     print("جاري تشغيل البوت مع لوحة تحكم وحذف ملفات الأدمن...")          
     app = Application.builder().token(BOT_TOKEN).build()          
          
@@ -1130,7 +1121,11 @@ def main():
     app.add_handler(MessageHandler(filters.Document.ALL | filters.PHOTO | filters.VIDEO | filters.AUDIO, handle_messages))          
          
     print("✅ تم تشغيل البوت بنجاح.")          
-    app.run_polling()          
+    app.run_polling(drop_pending_updates=True)          
          
 if __name__ == "__main__":          
-    main()
+    try:
+        asyncio.run(main())
+    except RuntimeError:
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(main())
