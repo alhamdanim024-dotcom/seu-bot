@@ -1111,8 +1111,8 @@ def main():
     if not BOT_TOKEN or BOT_TOKEN == "ضع_توكن_البوت_هنا":          
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")          
         return          
-
-    print("جاري تشغيل البوت مع لوحة تحكم وحذف ملفات الأدمن...")          
+         
+    print("جاري تشغيل البوت...")          
     app = Application.builder().token(BOT_TOKEN).build()          
          
     app.add_handler(CommandHandler("start", start))          
@@ -1121,6 +1121,8 @@ def main():
     app.add_handler(MessageHandler(filters.Document.ALL | filters.PHOTO | filters.VIDEO | filters.AUDIO, handle_messages))          
          
     print("✅ تم تشغيل البوت بنجاح.")          
+    
+    # التشغيل المباشر الذي يتخطى مشاكل الـ Event Loop تماماً
     app.run_polling(drop_pending_updates=True)          
          
 if __name__ == "__main__":          
