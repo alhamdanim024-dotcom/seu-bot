@@ -467,14 +467,19 @@ def freshmen_guide_reply_keyboard():
 
 
 # =========================================================          
-# دوال الإرسال وإدارة الملفات للأدمن
+# دوال الإرسال وإدارة الملفات للأدمن (محدثة لضمان إرسال الكابشن والنصوص)
 # =========================================================          
 async def send_system_guide_files(update, context, guide_key, guide_title):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
     await clear_sent_files(context, chat_id)
 
-    file_list = COURSE_FILES.get(guide_key, {}).get("files", [])
+    guide_data = COURSE_FILES.get(guide_key, {})
+    if isinstance(guide_data, list):
+        guide_data = {"files": guide_data}
+        COURSE_FILES[guide_key] = guide_data
+
+    file_list = guide_data.get("files", [])
 
     if not file_list:
         msg_text = f"📌 **{guide_title}**\n\nلا توجد ملفات مضافة لهذا الدليل حالياً."
