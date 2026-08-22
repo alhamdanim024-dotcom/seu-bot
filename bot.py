@@ -1104,15 +1104,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # =========================================================          
-# تشغيل البوت بالطريقة المباشرة والمتوافقة مع بايثون الحديثة
+# تشغيل البوت مع التوافق التام لإصدارات بايثون (تجاوز مشاكل Render)
 # =========================================================          
          
 def main():          
     if not BOT_TOKEN or BOT_TOKEN == "ضع_توكن_البوت_هنا":          
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")          
         return          
-         
-    print("جاري تشغيل البوت...")          
+
+    print("جاري تشغيل البوت مع لوحة تحكم وحذف ملفات الأدمن...")          
     app = Application.builder().token(BOT_TOKEN).build()          
          
     app.add_handler(CommandHandler("start", start))          
@@ -1121,9 +1121,19 @@ def main():
     app.add_handler(MessageHandler(filters.Document.ALL | filters.PHOTO | filters.VIDEO | filters.AUDIO, handle_messages))          
          
     print("✅ تم تشغيل البوت بنجاح.")          
-    
-    # التشغيل المباشر الذي يتخطى مشاكل الـ Event Loop تماماً
     app.run_polling(drop_pending_updates=True)          
          
-if __name__ == "__main__":          
-    main()
+if __name__ == "__main__":
+    try:
+        # محاولة التشغيل المباشر
+        asyncio.run(main())
+    except RuntimeError:
+        # معالجة حلقة الأحداث النشطة على السيرفر لتجنب أي انهيار
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                loop.create_task(main())
+            else:
+                loop.run_until_complete(main())
+        except Exception:
+            main()
