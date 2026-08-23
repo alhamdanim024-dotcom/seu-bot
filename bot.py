@@ -26,27 +26,7 @@ GROUP_URL = "https://t.me/SEU_Students2"
 WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3" 
 WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029VbE4u8MKWEKudwnk8N1o"
          
-DATA_FILE = "course_files.json"  # ملف الحفظ الدائم للملفات[cite: 3]
-         
-         
-# =========================================================          
-# ملفات الخطط الدراسية          
-# =========================================================          
-         
-PLAN_FILES = {          
-    "it": "ضع_file_id_خطة_IT_هنا",          
-    "cs": "ضع_file_id_خطة_CS_هنا",          
-    "ds": "ضع_file_id_خطة_DS_هنا",          
-    "public_health": "ضع_file_id_خطة_الصحة_العامة_هنا",          
-    "health_informatics": "ضع_file_id_خطة_المعلوماتية_الصحية_هنا",          
-    "business_admin": "ضع_file_id_خطة_إدارة_الأعمال_هنا",          
-    "accounting": "ضع_file_id_خطة_المحاسبة_هنا",          
-    "ecommerce": "ضع_file_id_خطة_التجارة_الإلكترونية_هنا",          
-    "finance": "ضع_file_id_خطة_المالية_هنا",          
-    "law": "ضع_file_id_خطة_القانون_هنا",          
-    "digital_media": "ضع_file_id_خطة_الإعلام_الرقمي_هنا",          
-    "translation": "ضع_file_id_خطة_اللغة_والترجمة_هنا",          
-}          
+DATA_FILE = "course_files.json"  # ملف الحفظ الدائم للملفات
          
          
 # =========================================================          
@@ -467,8 +447,40 @@ def freshmen_guide_reply_keyboard():
 
 
 # =========================================================          
-# دوال الإرسال وإدارة الملفات للأدمن
+# دوال إرسال وإدارة الملفات للأدمن
 # =========================================================          
+async def send_plan_file(update, context, specialty_prefix, specialty_name):
+    chat_id = update.effective_chat.id
+    user_id = update.effective_user.id
+    await clear_sent_files(context, chat_id)
+
+    plan_key = f"plan_{specialty_prefix}"
+    plan_data = COURSE_FILES.get(plan_key, {})
+    file_id = plan_data.get("file_id")
+
+    if not file_id:
+        msg_text = f"📋 **خطة {specialty_name}**\n\nلم تتم إضافة ملف الخطة بعد."
+        if user_id == ADMIN_ID:
+            context.user_data["waiting_for_file"] = {"plan_key": plan_key, "plan_title": f"خطة {specialty_name}"}
+            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل ملف الخطة (PDF) هنا ليتم حفظه وربطه بهذا التخصص فوراً."
+        await update.message.reply_text(msg_text, parse_mode="Markdown")
+        return
+
+    try:
+        markup = None
+        if user_id == ADMIN_ID:
+            markup = InlineKeyboardMarkup([[InlineKeyboardButton("🗑️ حذف ملف الخطة", callback_data=f"del_plan:{plan_key}")]])
+        
+        msg = await context.bot.send_document(chat_id=chat_id, document=file_id, caption=f"📋 خطة {specialty_name}", parse_mode="Markdown", reply_markup=markup)
+        if msg:
+            context.user_data["sent_files_messages"] = [msg.message_id]
+            
+        if user_id == ADMIN_ID:
+            context.user_data["waiting_for_file"] = {"plan_key": plan_key, "plan_title": f"خطة {specialty_name}"}
+    except Exception as error:
+        print(f"Error sending plan file: {error}")
+
+
 async def send_system_guide_files(update, context, guide_key, guide_title):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
@@ -621,6 +633,18 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption = update.message.caption if update.message.caption else ""
         target = context.user_data["waiting_for_file"]          
       
+        if "plan_key" in target:
+            p_key = target["plan_key"]
+            COURSE_FILES[p_key] = {"file_id": file_id, "type": file_type}
+            save_course_files()
+            await update.message.reply_text(
+                f"✅ **تم حفظ ملف الخطة بنجاح!**\n"
+                f"📋 القسم: {target['plan_title']}",
+                parse_mode="Markdown"
+            )
+            context.user_data.pop("waiting_for_file", None)
+            return
+
         if "guide_key" in target:
             g_key = target["guide_key"]
             if g_key not in COURSE_FILES:
@@ -830,12 +854,11 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if text == "📄 ملف الخطة الدراسية":
         prefix = context.user_data.get("current_specialty_prefix")
-        file_id = PLAN_FILES.get(prefix)
         specialty = context.user_data.get("current_specialty", "التخصص")
-        if not file_id or file_id.startswith("ضع_"):
-            await update.message.reply_text(f"📋 خطة {specialty}\n\nملف الخطة لم تتم إضافته بعد.")
+        if not prefix:
+            await update.message.reply_text("⚠️ يرجى اختيار التخصص أولاً.")
             return
-        await update.message.reply_document(document=file_id, caption=f"📋 خطة {specialty}")
+        await send_plan_file(update, context, prefix, specialty)
         return
 
     prep_courses_map = {
@@ -1079,6 +1102,17 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if user_id == ADMIN_ID:
+        if data.startswith("del_plan:"):
+            plan_key = data.split(":")[1]
+            if plan_key in COURSE_FILES:
+                COURSE_FILES.pop(plan_key, None)
+                save_course_files()
+                await query.answer("تم حذف ملف الخطة بنجاح ✅", show_alert=True)
+                await delete_message(context, chat_id, query.message.message_id)
+                return
+            await query.answer("عذراً، لم يتم العثور على الملف.", show_alert=True)
+            return
+
         if data.startswith("del_course:"):
             parts = data.split(":")
             c_id = parts[1]
