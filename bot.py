@@ -15,18 +15,19 @@ from telegram.error import BadRequest
          
          
 # =========================================================          
-# إعدادات البوت          
+# إعدادات البوت والقناة الخاصة بالأرشيف          
 # =========================================================          
          
 BOT_TOKEN = "8802545564:AAGhRtNK-I44igs2E4GWRqi6PsFLhuvtF2w"          
 ADMIN_ID = 7031240417  # الآيدي الخاص بك للمطور
+ARCHIVE_CHANNEL_ID = -1003585396877  # آيدي قناة الأرشيف الخاصة بك
          
 GROUP_USERNAME = "@SEU_Students2"          
 GROUP_URL = "https://t.me/SEU_Students2"         
 WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3" 
 WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029VbE4u8MKWEKudwnk8N1o"
          
-DATA_FILE = "course_files.json"  # ملف الحفظ الدائم للملفات[cite: 1, 2]
+DATA_FILE = "course_files.json"  # ملف مؤقت لتسجيل الروابط والمعرفات[cite: 1]
          
          
 # =========================================================          
@@ -59,7 +60,7 @@ COURSE_FILES = load_course_files()
 COURSES = {          
     "cs001": "💻 CS001 - مقدمة إلى الذكاء الاصطناعي", "ci001": "📖 CI001 - مهارات أكاديمية",          
     "english_level_1": "English - Level 1", "english_level_2": "English - Level 2", "english_level_3": "English - Level 3",
-    "math001": "MATH001 - الرياضيات", "com001": "COM001 - مهارت الاتصال",          
+    "math001": "MATH001 - الرياضيات", "com001": "COM001 - مهارات الاتصال",          
     "law_ai": "مقدمة إلى الذكاء الاصطناعي", "law_academic": "المهارات الأكاديمية", "law_english": "الإنجليزي",          
     "islam101": "ISLAM101", "islam102": "ISLAM102", "islam103": "ISLAM103", "islam104": "ISLAM104",          
 }          
@@ -225,7 +226,7 @@ for specialty_courses in THEORETICAL_COURSES.values():
          
          
 # =========================================================          
-# دوال التحقق والحذف          
+# دوال التحقق والأمان          
 # =========================================================          
          
 async def is_member(bot, user_id):          
@@ -432,7 +433,7 @@ def freshmen_guide_reply_keyboard():
 
 
 # =========================================================          
-# دوال إرسال الملفات بدون حذف السابقة (استجابة صاروخية)
+# دوال جلب الأرشيف التلقائي واستعراض الملفات
 # =========================================================          
 async def send_plan_file(update, context, specialty_prefix, specialty_name):
     chat_id = update.effective_chat.id
@@ -448,7 +449,7 @@ async def send_plan_file(update, context, specialty_prefix, specialty_name):
     if not file_id:
         msg_text = f"📋 **خطة {specialty_name}**\n\nلم تتم إضافة ملف الخطة بعد."
         if user_id == ADMIN_ID:
-            msg_text += f"\n\n🛠️ **[وضع المطور - جاهز للرفع]:** أرسل ملف الـ PDF الخاص بـ ({specialty_name}) الآن وسيتم حفظه وربطه فوراً!"
+            msg_text += f"\n\n🛠️ **[وضع المطور]:** أرسل ملف الـ PDF الخاص بـ ({specialty_name}) هنا ليتم حفظه وأرشفته في قناتك الخاصة للأبد!"
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
 
@@ -479,7 +480,7 @@ async def send_system_guide_files(update, context, guide_key, guide_title):
     if not file_list:
         msg_text = f"📌 **{guide_title}**\n\nلا توجد ملفات مضافة لهذا الدليل حالياً."
         if user_id == ADMIN_ID:
-            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل أي ملف/صورة/رابط هنا ليتم إضافته فوراً."
+            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل أي ملف/صورة/رابط هنا ليتم حفظه وأرشفته."
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
 
@@ -515,7 +516,7 @@ async def send_service_files(update, context, course_id, course_name, service):
     if not file_list:
         msg_text = f"📁 {course_name}\n\nلا توجد ملفات مضافة لهذا القسم حالياً."
         if user_id == ADMIN_ID:
-            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل الملفات أو الوسائط هنا ليتم حفظها فوراً."
+            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل الملفات أو الوسائط هنا ليتم حفظها وأرشفتها فوراً."
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
 
@@ -580,7 +581,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
           
     is_media_message = bool(update.message.document or update.message.photo or update.message.video or update.message.audio)
 
-    # وضع المطور لرفع الملفات والتقاط النص (Caption) المرافق لها
+    # وضع المطور لرفع الملفات وأرشفتها تلقائياً في قناتك الخاصة
     if user_id == ADMIN_ID and "waiting_for_file" in context.user_data and is_media_message:          
         if update.message.document:          
             file_id = update.message.document.file_id
@@ -599,14 +600,28 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
       
         caption = update.message.caption if update.message.caption else ""
         target = context.user_data["waiting_for_file"]          
+
+        # أرشفة تلقائية في قناتك الخاصة
+        try:
+            archive_caption = f"📦 أرشيف دائم\n📌 القسم: {target.get('plan_title', target.get('guide_title', target.get('course_id', 'ملف')))}"
+            if caption:
+                archive_caption += f"\n📝 الملاحظة: {caption}"
+            
+            await context.bot.copy_message(
+                chat_id=ARCHIVE_CHANNEL_ID,
+                from_chat_id=chat_id,
+                message_id=update.message.message_id,
+                caption=archive_caption
+            )
+        except Exception as e:
+            print(f"Archive forwarding error: {e}")
       
         if "plan_key" in target:
             p_key = target["plan_key"]
             COURSE_FILES[p_key] = {"file_id": file_id, "type": file_type}
             save_course_files()
             await update.message.reply_text(
-                f"✅ **تم حفظ ملف الخطة بنجاح!**\n"
-                f"📋 القسم: {target['plan_title']}",
+                f"✅ **تم حفظ وأرشفة الخطة بنجاح في قناتك الخاصة!**",
                 parse_mode="Markdown"
             )
             context.user_data.pop("waiting_for_file", None)
@@ -629,9 +644,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             save_course_files()
             total_files = len(COURSE_FILES[g_key]["files"])
             await update.message.reply_text(
-                f"✅ **تم الحفظ بنجاح مع النص/الرابط المرافق!**\n"
-                f"📌 الدليل: {target['guide_title']}\n"
-                f"📊 إجمالي الملفات: **{total_files}**",
+                f"✅ **تم الحفظ والأرشفة في قناتك بنجاح!** (إجمالي: {total_files})",
                 parse_mode="Markdown"
             )
             return
@@ -652,18 +665,12 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         save_course_files()
         
         total_files = len(COURSE_FILES[course_id][service])          
-        course_name = COURSES.get(course_id, course_id)          
-      
         await update.message.reply_text(          
-            f"✅ **تم الحفظ بنجاح مع النص/الرابط المرافق!**\n\n"          
-            f"📁 المقرر: {course_name}\n"          
-            f"⚙️ القسم: {service}\n"          
-            f"📊 إجمالي الملفات: **{total_files}**",          
+            f"✅ **تم الحفظ والأرشفة الدائمة بنجاح!** (إجمالي الملفات هنا: {total_files})",          
             parse_mode="Markdown"          
         )          
         return          
 
-    # إلغاء حالة انتظار الرفع عند الضغط على أي زر ليكون التنقل حراً وسريعاً
     if user_id == ADMIN_ID:
         context.user_data.pop("waiting_for_file", None)
 
@@ -875,7 +882,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(
                 f"🛠️ [وضع المطور - جاهز للرفع]\n"
                 f"📁 المقرر: {course_name} | القسم: {text}\n"
-                f"📥 أرسل الملف، الصورة، أو الفيديو الآن (مع كابشن إن أردت) وسيتم حفظه هنا مباشرة وعرض زر حذفه."
+                f"📥 أرسل الملف، الصورة، أو الفيديو الآن وسيتم حفظه وأرشفته تلقائياً."
             )
 
         await send_service_files(update, context, course_id, course_name, service)
@@ -1116,7 +1123,7 @@ def main():
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")
         return
 
-    print("جاري تشغيل البوت مع الاستجابة الصاروخية...")
+    print("جاري تشغيل البوت مع الأرشفة التلقائية الحية...")
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
