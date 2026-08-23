@@ -60,7 +60,7 @@ COURSE_FILES = load_course_files()
 COURSES = {          
     "cs001": "💻 CS001 - مقدمة إلى الذكاء الاصطناعي", "ci001": "📖 CI001 - مهارات أكاديمية",          
     "english_level_1": "English - Level 1", "english_level_2": "English - Level 2", "english_level_3": "English - Level 3",
-    "math001": "MATH001 - الرياضيات", "com001": "COM001 - مهارت الاتصال",          
+    "math001": "MATH001 - الرياضيات", "com001": "COM001 - مهارات الاتصال",          
     "law_ai": "مقدمة إلى الذكاء الاصطناعي", "law_academic": "المهارات الأكاديمية", "law_english": "الإنجليزي",          
     "islam101": "ISLAM101", "islam102": "ISLAM102", "islam103": "ISLAM103", "islam104": "ISLAM104",          
 }          
@@ -601,7 +601,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption = update.message.caption if update.message.caption else ""
         target = context.user_data["waiting_for_file"]          
 
-        # إرسال الملف مباشرة إلى قناة الأرشيف الخاصة بك
+        # إرسال الملف مباشرة إلى قناة الأرشيف الخاصة بك مع كشف الأخطاء
         try:
             archive_caption = f"📦 أرشيف دائم\n📌 القسم: {target.get('plan_title', target.get('guide_title', target.get('course_id', 'ملف')))}"
             if caption:
@@ -617,6 +617,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_document(chat_id=ARCHIVE_CHANNEL_ID, document=file_id, caption=archive_caption)
         except Exception as e:
             print(f"Archive sending error: {e}")
+            await update.message.reply_text(f"⚠️ خطأ في الأرشفة للقناة: {e}")
       
         if "plan_key" in target:
             p_key = target["plan_key"]
@@ -1110,6 +1111,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if 0 <= idx < len(COURSE_FILES[g_key]["files"]):
                     COURSE_FILES[g_key]["files"].pop(idx)
                     save_course_files()
+                    await query.answer("تم حذف الملف بنجاح ✅", show_Auth=True) if hasattr(query, 'answer') else None
                     await query.answer("تم حذف الملف بنجاح ✅", show_alert=True)
                     return
             await query.answer("عذراً، لم يتم العثور على الملف.", show_alert=True)
@@ -1125,7 +1127,7 @@ def main():
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")
         return
 
-    print("جاري تشغيل البوت مع الأرشفة المباشرة الحية...")
+    print("جاري تشغيل البوت مع فحص أخطاء الأرشفة...")
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
