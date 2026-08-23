@@ -458,11 +458,13 @@ async def send_plan_file(update, context, specialty_prefix, specialty_name):
     plan_data = COURSE_FILES.get(plan_key, {})
     file_id = plan_data.get("file_id")
 
+    if user_id == ADMIN_ID:
+        context.user_data["waiting_for_file"] = {"plan_key": plan_key, "plan_title": f"خطة {specialty_name}"}
+
     if not file_id:
         msg_text = f"📋 **خطة {specialty_name}**\n\nلم تتم إضافة ملف الخطة بعد."
         if user_id == ADMIN_ID:
-            context.user_data["waiting_for_file"] = {"plan_key": plan_key, "plan_title": f"خطة {specialty_name}"}
-            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل ملف الخطة (PDF) هنا ليتم حفظه وربطه بهذا التخصص فوراً."
+            msg_text += f"\n\n🛠️ **[وضع المطور - جاهز للرفع]:** أرسل ملف الـ PDF الخاص بـ ({specialty_name}) الآن وسيتم حفظه وربطه فوراً!"
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
 
@@ -476,7 +478,7 @@ async def send_plan_file(update, context, specialty_prefix, specialty_name):
             context.user_data["sent_files_messages"] = [msg.message_id]
             
         if user_id == ADMIN_ID:
-            context.user_data["waiting_for_file"] = {"plan_key": plan_key, "plan_title": f"خطة {specialty_name}"}
+            await update.message.reply_text(f"🛠️ [وضع المطور]: الخطة مضافة مسبقاً. إذا أردت تحديثها، أرسل ملف PDF جديد هنا.", parse_mode="Markdown")
     except Exception as error:
         print(f"Error sending plan file: {error}")
 
