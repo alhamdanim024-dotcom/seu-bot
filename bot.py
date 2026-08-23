@@ -26,7 +26,7 @@ GROUP_URL = "https://t.me/SEU_Students2"
 WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3" 
 WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029VbE4u8MKWEKudwnk8N1o"
          
-DATA_FILE = "course_files.json"  # ملف الحفظ الدائم للملفات
+DATA_FILE = "course_files.json"  # ملف الحفظ الدائم للملفات[cite: 3]
          
          
 # =========================================================          
@@ -69,7 +69,7 @@ def save_course_files():
     except Exception as e:
         print(f"Error saving data: {e}")
 
-COURSE_FILES = load_course_files()[cite: 1]
+COURSE_FILES = load_course_files()
          
          
 # =========================================================          
@@ -638,7 +638,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             save_course_files()
             total_files = len(COURSE_FILES[g_key]["files"])
             await update.message.reply_text(
-                f"✅ **تم الحفظ بنجاح مع النص/الرابط المرافق!**[cite: 1]\n"
+                f"✅ **تم الحفظ بنجاح مع النص/الرابط المرافق!**\n"
                 f"📌 الدليل: {target['guide_title']}\n"
                 f"📊 إجمالي الملفات: **{total_files}**",
                 parse_mode="Markdown"
@@ -664,7 +664,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         course_name = COURSES.get(course_id, course_id)          
       
         await update.message.reply_text(          
-            f"✅ **تم الحفظ بنجاح مع النص/الرابط المرافق!**[cite: 1]\n\n"          
+            f"✅ **تم الحفظ بنجاح مع النص/الرابط المرافق!**\n\n"          
             f"📁 المقرر: {course_name}\n"          
             f"⚙️ القسم: {service}\n"          
             f"📊 إجمالي الملفات: **{total_files}**",          
@@ -676,7 +676,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_id == ADMIN_ID:
         context.user_data.pop("waiting_for_file", None)
 
-    # التنقلات الرئيسية عبر الأزرار السفلية[cite: 1]
+    # التنقلات الرئيسية عبر الأزرار السفلية
     if text == "🏠 القائمة الرئيسية":
         await clear_sent_files(context, chat_id)
         await show_main_menu(chat_id, context, context.bot)
