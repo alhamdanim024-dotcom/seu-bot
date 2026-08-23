@@ -26,7 +26,7 @@ GROUP_URL = "https://t.me/SEU_Students2"
 WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3" 
 WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029VbE4u8MKWEKudwnk8N1o"
          
-DATA_FILE = "course_files.json"  # ملف الحفظ الدائم للملفات
+DATA_FILE = "course_files.json"  # ملف الحفظ الدائم للملفات[cite: 1, 2]
          
          
 # =========================================================          
@@ -59,7 +59,7 @@ COURSE_FILES = load_course_files()
 COURSES = {          
     "cs001": "💻 CS001 - مقدمة إلى الذكاء الاصطناعي", "ci001": "📖 CI001 - مهارات أكاديمية",          
     "english_level_1": "English - Level 1", "english_level_2": "English - Level 2", "english_level_3": "English - Level 3",
-    "math001": "MATH001 - الرياضيات", "com001": "COM001 - مهارات الاتصال",          
+    "math001": "MATH001 - الرياضيات", "com001": "COM001 - مهارت الاتصال",          
     "law_ai": "مقدمة إلى الذكاء الاصطناعي", "law_academic": "المهارات الأكاديمية", "law_english": "الإنجليزي",          
     "islam101": "ISLAM101", "islam102": "ISLAM102", "islam103": "ISLAM103", "islam104": "ISLAM104",          
 }          
@@ -225,7 +225,7 @@ for specialty_courses in THEORETICAL_COURSES.values():
          
          
 # =========================================================          
-# دوال التحقق والحذف وتطهير الشاشة          
+# دوال التحقق والحذف          
 # =========================================================          
          
 async def is_member(bot, user_id):          
@@ -247,21 +247,6 @@ async def check_user_access(update, context):
         return True
     user_id = update.effective_user.id
     return await is_member(context.bot, user_id)          
-         
-async def delete_message(context, chat_id, message_id):          
-    if not message_id:          
-        return          
-    try:          
-        await context.bot.delete_message(chat_id=chat_id, message_id=message_id)          
-    except Exception:          
-        pass          
-
-async def clear_sent_files(context, chat_id):          
-    sent_messages = context.user_data.get("sent_files_messages", [])          
-    if sent_messages:          
-        tasks = [delete_message(context, chat_id, msg_id) for msg_id in sent_messages]
-        await asyncio.gather(*tasks, return_exceptions=True)
-        context.user_data["sent_files_messages"] = []          
          
 def subscription_keyboard():          
     return InlineKeyboardMarkup([          
@@ -447,12 +432,11 @@ def freshmen_guide_reply_keyboard():
 
 
 # =========================================================          
-# دوال إرسال وإدارة الملفات للأدمن
+# دوال إرسال الملفات بدون حذف السابقة (استجابة صاروخية)
 # =========================================================          
 async def send_plan_file(update, context, specialty_prefix, specialty_name):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
-    await clear_sent_files(context, chat_id)
 
     plan_key = f"plan_{specialty_prefix}"
     plan_data = COURSE_FILES.get(plan_key, {})
@@ -473,9 +457,7 @@ async def send_plan_file(update, context, specialty_prefix, specialty_name):
         if user_id == ADMIN_ID:
             markup = InlineKeyboardMarkup([[InlineKeyboardButton("🗑️ حذف ملف الخطة", callback_data=f"del_plan:{plan_key}")]])
         
-        msg = await context.bot.send_document(chat_id=chat_id, document=file_id, caption=f"📋 خطة {specialty_name}", parse_mode="Markdown", reply_markup=markup)
-        if msg:
-            context.user_data["sent_files_messages"] = [msg.message_id]
+        await context.bot.send_document(chat_id=chat_id, document=file_id, caption=f"📋 خطة {specialty_name}", parse_mode="Markdown", reply_markup=markup)
             
         if user_id == ADMIN_ID:
             await update.message.reply_text(f"🛠️ [وضع المطور]: الخطة مضافة مسبقاً. إذا أردت تحديثها، أرسل ملف PDF جديد هنا.", parse_mode="Markdown")
@@ -486,7 +468,6 @@ async def send_plan_file(update, context, specialty_prefix, specialty_name):
 async def send_system_guide_files(update, context, guide_key, guide_title):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
-    await clear_sent_files(context, chat_id)
 
     guide_data = COURSE_FILES.get(guide_key, {})
     if isinstance(guide_data, list):
@@ -502,39 +483,31 @@ async def send_system_guide_files(update, context, guide_key, guide_title):
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
 
-    sent_message_ids = []
     for idx, item in enumerate(file_list):
         f_id = item.get("file_id")
         f_type = item.get("type", "document")
         caption = item.get("caption", "")
 
         try:
-            msg = None
             markup = None
             if user_id == ADMIN_ID:
                 markup = InlineKeyboardMarkup([[InlineKeyboardButton(f"🗑️ حذف هذا الملف ({idx+1})", callback_data=f"del_guide:{guide_key}:{idx}")]])
 
             if f_type == "photo":
-                msg = await context.bot.send_photo(chat_id=chat_id, photo=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
+                await context.bot.send_photo(chat_id=chat_id, photo=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
             elif f_type == "video":
-                msg = await context.bot.send_video(chat_id=chat_id, video=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
+                await context.bot.send_video(chat_id=chat_id, video=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
             elif f_type == "audio":
-                msg = await context.bot.send_audio(chat_id=chat_id, audio=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
+                await context.bot.send_audio(chat_id=chat_id, audio=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
             else:
-                msg = await context.bot.send_document(chat_id=chat_id, document=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
-                
-            if msg:
-                sent_message_ids.append(msg.message_id)
+                await context.bot.send_document(chat_id=chat_id, document=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
         except Exception as error:          
             print(f"Error sending guide file: {error}")
-            
-    context.user_data["sent_files_messages"] = sent_message_ids
 
 
 async def send_service_files(update, context, course_id, course_name, service):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
-    await clear_sent_files(context, chat_id)
 
     course_files = COURSE_FILES.get(course_id, {})
     file_list = course_files.get(service, [])
@@ -546,37 +519,30 @@ async def send_service_files(update, context, course_id, course_name, service):
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
 
-    sent_message_ids = []
     for idx, item in enumerate(file_list):
         f_id = item.get("file_id")
         f_type = item.get("type", "document")
         caption = item.get("caption", "")
 
         try:
-            msg = None
             markup = None
             if user_id == ADMIN_ID:
                 markup = InlineKeyboardMarkup([[InlineKeyboardButton(f"🗑️ حذف هذا الملف ({idx+1})", callback_data=f"del_course:{course_id}:{service}:{idx}")]])
 
             if f_type == "photo":
-                msg = await context.bot.send_photo(chat_id=chat_id, photo=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
+                await context.bot.send_photo(chat_id=chat_id, photo=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
             elif f_type == "video":
-                msg = await context.bot.send_video(chat_id=chat_id, video=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
+                await context.bot.send_video(chat_id=chat_id, video=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
             elif f_type == "audio":
-                msg = await context.bot.send_audio(chat_id=chat_id, audio=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
+                await context.bot.send_audio(chat_id=chat_id, audio=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
             else:
-                msg = await context.bot.send_document(chat_id=chat_id, document=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
-                
-            if msg:
-                sent_message_ids.append(msg.message_id)
+                await context.bot.send_document(chat_id=chat_id, document=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
         except Exception as error:          
             print(f"Error sending service file: {error}")
-            
-    context.user_data["sent_files_messages"] = sent_message_ids
 
 
 # =========================================================          
-# دالة إرسال القائمة الرئيسية المباشرة          
+# دالة إرسال القائمة الرئيسية          
 # =========================================================          
 async def show_main_menu(chat_id, context, bot):
     context.user_data["menu_state"] = "main"
@@ -600,7 +566,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_subscription_message(update, context)          
         return          
     context.user_data.pop("waiting_for_file", None)
-    await clear_sent_files(context, update.effective_chat.id)
     await show_main_menu(update.effective_chat.id, context, context.bot)
 
 
@@ -615,7 +580,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
           
     is_media_message = bool(update.message.document or update.message.photo or update.message.video or update.message.audio)
 
-    # وضع المطور لرفع الملفات والتقاط النص (Caption) المرافق لها تماماً عند إرسال ملف حقيقي
+    # وضع المطور لرفع الملفات والتقاط النص (Caption) المرافق لها
     if user_id == ADMIN_ID and "waiting_for_file" in context.user_data and is_media_message:          
         if update.message.document:          
             file_id = update.message.document.file_id
@@ -698,13 +663,12 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )          
         return          
 
-    # إذا ضغط الأدمن على أي زر أو كتب نصاً، يتم إلغاء حالة انتظار الرفع ليتنقل بحرية تامة
+    # إلغاء حالة انتظار الرفع عند الضغط على أي زر ليكون التنقل حراً وسريعاً
     if user_id == ADMIN_ID:
         context.user_data.pop("waiting_for_file", None)
 
     # التنقلات الرئيسية عبر الأزرار السفلية
     if text == "🏠 القائمة الرئيسية":
-        await clear_sent_files(context, chat_id)
         await show_main_menu(chat_id, context, context.bot)
         return
 
@@ -1099,7 +1063,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.answer("لم تقم بالانضمام بعد.", show_alert=True)          
             return          
         await query.answer("تم التحقق بنجاح ✅")          
-        await delete_message(context, chat_id, query.message.message_id)          
         await show_main_menu(chat_id, context, context.bot)
         return
 
@@ -1110,7 +1073,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 COURSE_FILES.pop(plan_key, None)
                 save_course_files()
                 await query.answer("تم حذف ملف الخطة بنجاح ✅", show_alert=True)
-                await delete_message(context, chat_id, query.message.message_id)
                 return
             await query.answer("عذراً، لم يتم العثور على الملف.", show_alert=True)
             return
@@ -1126,7 +1088,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     COURSE_FILES[c_id][serv].pop(idx)
                     save_course_files()
                     await query.answer("تم حذف الملف بنجاح ✅", show_alert=True)
-                    await delete_message(context, chat_id, query.message.message_id)
                     return
             await query.answer("عذراً، لم يتم العثور على الملف.", show_alert=True)
             return
@@ -1141,7 +1102,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     COURSE_FILES[g_key]["files"].pop(idx)
                     save_course_files()
                     await query.answer("تم حذف الملف بنجاح ✅", show_alert=True)
-                    await delete_message(context, chat_id, query.message.message_id)
                     return
             await query.answer("عذراً، لم يتم العثور على الملف.", show_alert=True)
             return
@@ -1156,7 +1116,7 @@ def main():
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")
         return
 
-    print("جاري تشغيل البوت مع لوحة تحكم وحذف ملفات الأدمن...")
+    print("جاري تشغيل البوت مع الاستجابة الصاروخية...")
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
