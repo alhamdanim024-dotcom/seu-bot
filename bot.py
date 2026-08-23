@@ -60,7 +60,7 @@ COURSE_FILES = load_course_files()
 COURSES = {          
     "cs001": "💻 CS001 - مقدمة إلى الذكاء الاصطناعي", "ci001": "📖 CI001 - مهارات أكاديمية",          
     "english_level_1": "English - Level 1", "english_level_2": "English - Level 2", "english_level_3": "English - Level 3",
-    "math001": "MATH001 - الرياضيات", "com001": "COM001 - مهارات الاتصال",          
+    "math001": "MATH001 - الرياضيات", "com001": "COM001 - مهارت الاتصال",          
     "law_ai": "مقدمة إلى الذكاء الاصطناعي", "law_academic": "المهارات الأكاديمية", "law_english": "الإنجليزي",          
     "islam101": "ISLAM101", "islam102": "ISLAM102", "islam103": "ISLAM103", "islam104": "ISLAM104",          
 }          
@@ -601,20 +601,22 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption = update.message.caption if update.message.caption else ""
         target = context.user_data["waiting_for_file"]          
 
-        # أرشفة تلقائية في قناتك الخاصة
+        # إرسال الملف مباشرة إلى قناة الأرشيف الخاصة بك
         try:
             archive_caption = f"📦 أرشيف دائم\n📌 القسم: {target.get('plan_title', target.get('guide_title', target.get('course_id', 'ملف')))}"
             if caption:
                 archive_caption += f"\n📝 الملاحظة: {caption}"
             
-            await context.bot.copy_message(
-                chat_id=ARCHIVE_CHANNEL_ID,
-                from_chat_id=chat_id,
-                message_id=update.message.message_id,
-                caption=archive_caption
-            )
+            if file_type == "photo":
+                await context.bot.send_photo(chat_id=ARCHIVE_CHANNEL_ID, photo=file_id, caption=archive_caption)
+            elif file_type == "video":
+                await context.bot.send_video(chat_id=ARCHIVE_CHANNEL_ID, video=file_id, caption=archive_caption)
+            elif file_type == "audio":
+                await context.bot.send_audio(chat_id=ARCHIVE_CHANNEL_ID, audio=file_id, caption=archive_caption)
+            else:
+                await context.bot.send_document(chat_id=ARCHIVE_CHANNEL_ID, document=file_id, caption=archive_caption)
         except Exception as e:
-            print(f"Archive forwarding error: {e}")
+            print(f"Archive sending error: {e}")
       
         if "plan_key" in target:
             p_key = target["plan_key"]
@@ -1123,7 +1125,7 @@ def main():
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")
         return
 
-    print("جاري تشغيل البوت مع الأرشفة التلقائية الحية...")
+    print("جاري تشغيل البوت مع الأرشفة المباشرة الحية...")
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
