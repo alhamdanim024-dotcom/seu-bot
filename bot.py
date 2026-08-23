@@ -69,7 +69,7 @@ def save_course_files():
     except Exception as e:
         print(f"Error saving data: {e}")
 
-COURSE_FILES = load_course_files()
+COURSE_FILES = load_course_files()[cite: 1]
          
          
 # =========================================================          
@@ -467,7 +467,7 @@ def freshmen_guide_reply_keyboard():
 
 
 # =========================================================          
-# دوال الإرسال وإدارة الملفات للأدمن (محدثة لضمان إرسال الكابشن والنصوص)
+# دوال الإرسال وإدارة الملفات للأدمن
 # =========================================================          
 async def send_system_guide_files(update, context, guide_key, guide_title):
     chat_id = update.effective_chat.id
@@ -585,6 +585,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await check_user_access(update, context):          
         await send_subscription_message(update, context)          
         return          
+    context.user_data.pop("waiting_for_file", None)
     await clear_sent_files(context, update.effective_chat.id)
     await show_main_menu(update.effective_chat.id, context, context.bot)
 
@@ -598,82 +599,84 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_subscription_message(update, context)          
         return          
           
-    # وضع المطور لرفع الملفات والتقاط النص (Caption) المرافق لها تماماً
-    if user_id == ADMIN_ID and "waiting_for_file" in context.user_data:          
-        if update.message.document or update.message.video or update.message.audio or update.message.photo:          
-            if update.message.document:          
-                file_id = update.message.document.file_id
-                file_type = "document"
-            elif update.message.photo:          
-                file_id = update.message.photo[-1].file_id
-                file_type = "photo"
-            elif update.message.video:          
-                file_id = update.message.video.file_id
-                file_type = "video"
-            elif update.message.audio:          
-                file_id = update.message.audio.file_id
-                file_type = "audio"
-            else:          
-                return          
-          
-            caption = update.message.caption if update.message.caption else ""
-            target = context.user_data["waiting_for_file"]          
-          
-            if "guide_key" in target:
-                g_key = target["guide_key"]
-                if g_key not in COURSE_FILES:
-                    COURSE_FILES[g_key] = {"files": []}
-                if isinstance(COURSE_FILES[g_key], list):
-                    COURSE_FILES[g_key] = {"files": COURSE_FILES[g_key]}
-                if "files" not in COURSE_FILES[g_key]:
-                    COURSE_FILES[g_key]["files"] = []
-                
-                COURSE_FILES[g_key]["files"].append({
-                    "file_id": file_id, 
-                    "type": file_type, 
-                    "caption": caption
-                })
-                save_course_files()
-                total_files = len(COURSE_FILES[g_key]["files"])
-                await update.message.reply_text(
-                    f"✅ **تم الحفظ بنجاح مع النص/الرابط المرافق!**\n"
-                    f"📌 الدليل: {target['guide_title']}\n"
-                    f"📊 إجمالي الملفات: **{total_files}**",
-                    parse_mode="Markdown"
-                )
-                return
+    is_media_message = bool(update.message.document or update.message.photo or update.message.video or update.message.audio)
 
-            course_id = target["course_id"]          
-            service = target["service"]          
-          
-            if course_id not in COURSE_FILES:          
-                COURSE_FILES[course_id] = {}          
-            if service not in COURSE_FILES[course_id]:          
-                COURSE_FILES[course_id][service] = []          
-                
-            COURSE_FILES[course_id][service].append({
+    # وضع المطور لرفع الملفات والتقاط النص (Caption) المرافق لها تماماً عند إرسال ملف حقيقي
+    if user_id == ADMIN_ID and "waiting_for_file" in context.user_data and is_media_message:          
+        if update.message.document:          
+            file_id = update.message.document.file_id
+            file_type = "document"
+        elif update.message.photo:          
+            file_id = update.message.photo[-1].file_id
+            file_type = "photo"
+        elif update.message.video:          
+            file_id = update.message.video.file_id
+            file_type = "video"
+        elif update.message.audio:          
+            file_id = update.message.audio.file_id
+            file_type = "audio"
+        else:          
+            return          
+      
+        caption = update.message.caption if update.message.caption else ""
+        target = context.user_data["waiting_for_file"]          
+      
+        if "guide_key" in target:
+            g_key = target["guide_key"]
+            if g_key not in COURSE_FILES:
+                COURSE_FILES[g_key] = {"files": []}
+            if isinstance(COURSE_FILES[g_key], list):
+                COURSE_FILES[g_key] = {"files": COURSE_FILES[g_key]}
+            if "files" not in COURSE_FILES[g_key]:
+                COURSE_FILES[g_key]["files"] = []
+            
+            COURSE_FILES[g_key]["files"].append({
                 "file_id": file_id, 
                 "type": file_type, 
                 "caption": caption
-            })          
+            })
             save_course_files()
-            
-            total_files = len(COURSE_FILES[course_id][service])          
-            course_name = COURSES.get(course_id, course_id)          
-          
-            await update.message.reply_text(          
-                f"✅ **تم الحفظ بنجاح مع النص/الرابط المرافق!**\n\n"          
-                f"📁 المقرر: {course_name}\n"          
-                f"⚙️ القسم: {service}\n"          
-                f"📊 إجمالي الملفات: **{total_files}**",          
-                parse_mode="Markdown"          
-            )          
-            return          
-        else:          
-            await update.message.reply_text("⚠️ يرجى إرسال ملف أو وسائط صحيحة.")          
-            return          
+            total_files = len(COURSE_FILES[g_key]["files"])
+            await update.message.reply_text(
+                f"✅ **تم الحفظ بنجاح مع النص/الرابط المرافق!**[cite: 1]\n"
+                f"📌 الدليل: {target['guide_title']}\n"
+                f"📊 إجمالي الملفات: **{total_files}**",
+                parse_mode="Markdown"
+            )
+            return
 
-    # التنقلات الرئيسية عبر الأزرار السفلية
+        course_id = target["course_id"]          
+        service = target["service"]          
+      
+        if course_id not in COURSE_FILES:          
+            COURSE_FILES[course_id] = {}          
+        if service not in COURSE_FILES[course_id]:          
+            COURSE_FILES[course_id][service] = []          
+            
+        COURSE_FILES[course_id][service].append({
+            "file_id": file_id, 
+            "type": file_type, 
+            "caption": caption
+        })          
+        save_course_files()
+        
+        total_files = len(COURSE_FILES[course_id][service])          
+        course_name = COURSES.get(course_id, course_id)          
+      
+        await update.message.reply_text(          
+            f"✅ **تم الحفظ بنجاح مع النص/الرابط المرافق!**[cite: 1]\n\n"          
+            f"📁 المقرر: {course_name}\n"          
+            f"⚙️ القسم: {service}\n"          
+            f"📊 إجمالي الملفات: **{total_files}**",          
+            parse_mode="Markdown"          
+        )          
+        return          
+
+    # إذا ضغط الأدمن على أي زر أو كتب نصاً، يتم إلغاء حالة انتظار الرفع ليتنقل بحرية تامة
+    if user_id == ADMIN_ID:
+        context.user_data.pop("waiting_for_file", None)
+
+    # التنقلات الرئيسية عبر الأزرار السفلية[cite: 1]
     if text == "🏠 القائمة الرئيسية":
         await clear_sent_files(context, chat_id)
         await show_main_menu(chat_id, context, context.bot)
@@ -1109,7 +1112,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # =========================================================          
-# تشغيل البوت مع التوافق التام لإصدارات بايثون (تجاوز مشاكل Render)
+# تشغيل البوت          
 # =========================================================          
          
 def main():
