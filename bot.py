@@ -27,7 +27,7 @@ GROUP_URL = "https://t.me/SEU_Students2"
 WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3" 
 WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029VbE4u8MKWEKudwnk8N1o"
          
-DATA_FILE = "course_files.json"  # ملف مؤقت لتسجيل الروابط والمعرفات[cite: 1]
+DATA_FILE = "course_files.json"  # ملف مؤقت لتسجيل الروابط والمعرفات[cite: 1, 2]
          
          
 # =========================================================          
@@ -381,8 +381,8 @@ def courses_list_reply_keyboard(courses_list, prefix):
     keyboard.append(["⬅️ رجوع", "🏠 القائمة الرئيسية"])
     return ReplyKeyboardMarkup(keyboard, resize_keyboard=True, input_field_placeholder="اختر المقرر المطلوب 👇")
 
-def course_services_reply_keyboard(is_math=False):
-    if is_math:
+def course_services_reply_keyboard(course_id):
+    if course_id == "math001":
         return ReplyKeyboardMarkup([
             ["📚 الملخصات", "📘 الكتاب"],
             ["🔗 طريقة الدخول لواجبات الماث", "🧩 تجميعات"],
@@ -391,7 +391,6 @@ def course_services_reply_keyboard(is_math=False):
     else:
         return ReplyKeyboardMarkup([
             ["📚 الملخصات", "📘 الكتاب"],
-            ["🧩 تجميعات"],
             ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
         ], resize_keyboard=True, input_field_placeholder="اختر الخدمة المطلوبة 👇")
 
@@ -732,7 +731,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["menu_state"] = f"course:{course_id}"
         
         msg_text = f"📘 {course_name}\n\nاختر الخدمة المطلوبة:"
-        markup = course_services_reply_keyboard(is_math=False)
+        markup = course_services_reply_keyboard(course_id)
         if user_id == ADMIN_ID:
             context.user_data["waiting_for_file"] = {"course_id": course_id, "service": "book"}
             msg_text += "\n\n🛠️ [وضع المطور]: اضغط على الخدمة أدناه (كتاب أو ملخصات) لتفعيل الرفع المباشر لها."
@@ -850,8 +849,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["current_course_id"] = course_id
         context.user_data["current_course"] = course_name
         context.user_data["menu_state"] = f"course:{course_id}"
-        is_math = (course_id == "math001")
-        await update.message.reply_text(f"📘 {course_name}\n\nاختر الخدمة المطلوبة:", reply_markup=course_services_reply_keyboard(is_math))
+        await update.message.reply_text(f"📘 {course_name}\n\nاختر الخدمة المطلوبة:", reply_markup=course_services_reply_keyboard(course_id))
         return
 
     found_course_id = None
@@ -867,7 +865,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["current_course_id"] = found_course_id
         context.user_data["current_course"] = found_course_name
         context.user_data["menu_state"] = f"course:{found_course_id}"
-        await update.message.reply_text(f"📘 المقرر: {found_course_name}\n\nاختر الخدمة المطلوبة:", reply_markup=course_services_reply_keyboard(is_math=False))
+        await update.message.reply_text(f"📘 المقرر: {found_course_name}\n\nاختر الخدمة المطلوبة:", reply_markup=course_services_reply_keyboard(found_course_id))
         return
 
     if text in ["📘 الكتاب", "📚 الملخصات"]:
@@ -1050,9 +1048,8 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("🧩 تجميعات المقرر\n\nاختر القسم المطلوب:", reply_markup=math_collections_reply_keyboard())
         elif state == "math_collections":
             course_id = context.user_data.get("current_course_id", "")
-            is_math = (course_id == "math001")
             context.user_data["menu_state"] = f"course:{course_id}"
-            await update.message.reply_text("📘 خدمات المقرر\n\nاختر الخدمة المطلوبة:", reply_markup=course_services_reply_keyboard(is_math=is_math))
+            await update.message.reply_text("📘 خدمات المقرر\n\nاختر الخدمة المطلوبة:", reply_markup=course_services_reply_keyboard(course_id))
         else:
             await show_main_menu(chat_id, context, context.bot)
         return
@@ -1111,7 +1108,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if 0 <= idx < len(COURSE_FILES[g_key]["files"]):
                     COURSE_FILES[g_key]["files"].pop(idx)
                     save_course_files()
-                    await query.answer("تم حذف الملف بنجاح ✅", show_Auth=True) if hasattr(query, 'answer') else None
                     await query.answer("تم حذف الملف بنجاح ✅", show_alert=True)
                     return
             await query.answer("عذراً، لم يتم العثور على الملف.", show_alert=True)
@@ -1127,7 +1123,7 @@ def main():
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")
         return
 
-    print("جاري تشغيل البوت مع فحص أخطاء الأرشفة...")
+    print("جاري تشغيل البوت...")
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
