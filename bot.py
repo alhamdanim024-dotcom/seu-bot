@@ -391,6 +391,7 @@ def course_services_reply_keyboard(course_id):
     else:
         return ReplyKeyboardMarkup([
             ["📚 الملخصات", "📘 الكتاب"],
+            ["🧩 تجميعات"],
             ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
         ], resize_keyboard=True, input_field_placeholder="اختر الخدمة المطلوبة 👇")
 
@@ -458,9 +459,6 @@ async def send_plan_file(update, context, specialty_prefix, specialty_name):
             markup = InlineKeyboardMarkup([[InlineKeyboardButton("🗑️ حذف ملف الخطة", callback_data=f"del_plan:{plan_key}")]])
         
         await context.bot.send_document(chat_id=chat_id, document=file_id, caption=f"📋 خطة {specialty_name}", parse_mode="Markdown", reply_markup=markup)
-            
-        if user_id == ADMIN_ID:
-            await update.message.reply_text(f"🛠️ [وضع المطور]: الخطة مضافة مسبقاً. إذا أردت تحديثها، أرسل ملف PDF جديد هنا.", parse_mode="Markdown")
     except Exception as error:
         print(f"Error sending plan file: {error}")
 
@@ -580,7 +578,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
           
     is_media_message = bool(update.message.document or update.message.photo or update.message.video or update.message.audio)
 
-    # وضع المطور لرفع الملفات وأرشفتها تلقائياً في قناتك الخاصة
+    # وضع المطور لرفع الملفات وأرشفتها تلقائياً واستخراج الـ file_id
     if user_id == ADMIN_ID and "waiting_for_file" in context.user_data and is_media_message:          
         if update.message.document:          
             file_id = update.message.document.file_id
@@ -600,7 +598,6 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption = update.message.caption if update.message.caption else ""
         target = context.user_data["waiting_for_file"]          
 
-        # إرسال الملف مباشرة إلى قناة الأرشيف الخاصة بك مع كشف الأخطاء
         try:
             archive_caption = f"📦 أرشيف دائم\n📌 القسم: {target.get('plan_title', target.get('guide_title', target.get('course_id', 'ملف')))}"
             if caption:
@@ -623,7 +620,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             COURSE_FILES[p_key] = {"file_id": file_id, "type": file_type}
             save_course_files()
             await update.message.reply_text(
-                f"✅ **تم حفظ وأرشفة الخطة بنجاح في قناتك الخاصة!**",
+                f"✅ **تم حفظ وأرشفة الخطة بنجاح!**\n🔑 **معرف الملف (file_id):**\n`{file_id}`",
                 parse_mode="Markdown"
             )
             context.user_data.pop("waiting_for_file", None)
@@ -646,7 +643,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             save_course_files()
             total_files = len(COURSE_FILES[g_key]["files"])
             await update.message.reply_text(
-                f"✅ **تم الحفظ والأرشفة في قناتك بنجاح!** (إجمالي: {total_files})",
+                f"✅ **تم الحفظ بنجاح!** (إجمالي: {total_files})\n🔑 **معرف الملف (file_id):**\n`{file_id}`",
                 parse_mode="Markdown"
             )
             return
@@ -668,7 +665,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         total_files = len(COURSE_FILES[course_id][service])          
         await update.message.reply_text(          
-            f"✅ **تم الحفظ والأرشفة الدائمة بنجاح!** (إجمالي الملفات هنا: {total_files})",          
+            f"✅ **تم الحفظ والأرشفة بنجاح!** (إجمالي الملفات هنا: {total_files})\n🔑 **معرف الملف (file_id):**\n`{file_id}`",          
             parse_mode="Markdown"          
         )          
         return          
@@ -734,7 +731,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         markup = course_services_reply_keyboard(course_id)
         if user_id == ADMIN_ID:
             context.user_data["waiting_for_file"] = {"course_id": course_id, "service": "book"}
-            msg_text += "\n\n🛠️ [وضع المطور]: اضغط على الخدمة أدناه (كتاب أو ملخصات) لتفعيل الرفع المباشر لها."
+            msg_text += "\n\n🛠️ [وضع المطور]: اضغط على الخدمة أدناه لتفعيل الرفع المباشر لها."
         await update.message.reply_text(msg_text, reply_markup=markup)
         return
 
@@ -883,15 +880,31 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(
                 f"🛠️ [وضع المطور - جاهز للرفع]\n"
                 f"📁 المقرر: {course_name} | القسم: {text}\n"
-                f"📥 أرسل الملف، الصورة، أو الفيديو الآن وسيتم حفظه وأرشفته تلقائياً."
+                f"📥 أرسل الملف الآن وسيتم حفظه واستخراج الـ file_id."
             )
 
         await send_service_files(update, context, course_id, course_name, service)
         return
 
     if text == "🧩 تجميعات":
-        context.user_data["menu_state"] = "math_collections"
-        await update.message.reply_text("🧩 تجميعات المقرر\n\nاختر القسم المطلوب:", reply_markup=math_collections_reply_keyboard())
+        course_id = context.user_data.get("current_course_id")
+        course_name = context.user_data.get("current_course", "المقرر")
+
+        if not course_id:
+            await update.message.reply_text("⚠️ لم يتم تحديد المقرر، يرجى العودة للقائمة الرئيسية.")
+            return
+
+        if course_id == "math001":
+            context.user_data["menu_state"] = "math_collections"
+            await update.message.reply_text("🧩 تجميعات المقرر\n\nاختر القسم المطلوب:", reply_markup=math_collections_reply_keyboard())
+            return
+        
+        service = "collections"
+        if user_id == ADMIN_ID:
+            context.user_data["waiting_for_file"] = {"course_id": course_id, "service": service}
+            await update.message.reply_text(f"🛠️ [وضع المطور] أرسل ملفات التجميعات الخاصة بـ ({course_name}) هنا:")
+
+        await send_service_files(update, context, course_id, course_name, service)
         return
 
     if text == "📄 تجميعات الواجبات":
@@ -1123,7 +1136,7 @@ def main():
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")
         return
 
-    print("جاري تشغيل البوت...")
+    print("جاري تشغيل البوت مع ميزة استخراج المعرفات...")
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
