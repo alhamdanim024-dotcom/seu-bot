@@ -18,23 +18,95 @@ from telegram.error import BadRequest
 # إعدادات البوت والقناة الخاصة بالأرشيف          
 # =========================================================          
          
-BOT_TOKEN = "8802545564:AAGhRtNK-I44igs2E4GWRqi6PsFLhuvtF2w"          
-ADMIN_ID = 7031240417  # الآيدي الخاص بك للمطور
-ARCHIVE_CHANNEL_ID = -1003585396877  # آيدي قناة الأرشيف الخاصة بك
-         
-GROUP_USERNAME = "@SEU_Students2"          
-GROUP_URL = "https://t.me/SEU_Students2"         
-WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3" 
+# ⚠️ لا تضع التوكن داخل الكود. أضفه في Render > Environment.
+BOT_TOKEN = os.getenv("BOT_TOKEN", "")
+ADMIN_ID = int(os.getenv("ADMIN_ID", "7031240417"))
+ARCHIVE_CHANNEL_ID = int(os.getenv("ARCHIVE_CHANNEL_ID", "-1003585396877"))
+DATABASE_URL = os.getenv("DATABASE_URL", "")
+
+GROUP_USERNAME = "@SEU_Students2"
+GROUP_URL = "https://t.me/SEU_Students2"
+WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3"
 WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029VbE4u8MKWEKudwnk8N1o"
-         
-DATA_FILE = "course_files.json"  # ملف مؤقت لتسجيل الروابط والمعرفات[cite: 1, 2]
-         
-         
-# =========================================================          
-# دوال حفظ واسترجاع الملفات          
-# =========================================================          
+
+DATA_FILE = "course_files.json"  # نسخة محلية احتياطية/لترحيل البيانات القديمة
+
+
+# =========================================================
+# التخزين الدائم لملفات البوت
+# =========================================================
+# يتم حفظ file_id والبيانات في PostgreSQL، وليس على قرص Render.
+# هذا يجعل الملفات/المعرفات تبقى بعد كل Deploy أو Restart.
+
+try:
+    import psycopg2
+    from psycopg2.extras import Json
+except ImportError:
+    psycopg2 = None
+    Json = None
+
+
+def _db_connect():
+    if not DATABASE_URL:
+        return None
+    if psycopg2 is None:
+        raise RuntimeError("psycopg2 غير مثبت. أضف psycopg2-binary إلى requirements.txt")
+    return psycopg2.connect(DATABASE_URL, sslmode="require")
+
+
+def init_database():
+    if not DATABASE_URL:
+        print("⚠️ DATABASE_URL غير موجودة؛ سيتم استخدام course_files.json محلياً فقط.")
+        return
+    conn = _db_connect()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS bot_storage (
+                    id INTEGER PRIMARY KEY,
+                    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+                    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                )
+            """)
+            conn.commit()
+    finally:
+        conn.close()
+
 
 def load_course_files():
+    if DATABASE_URL:
+        conn = _db_connect()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("SELECT data FROM bot_storage WHERE id = 1")
+                row = cur.fetchone()
+                if row and row[0]:
+                    print("✅ تم تحميل بيانات الملفات من PostgreSQL")
+                    return row[0]
+
+                # ترحيل البيانات القديمة من course_files.json مرة واحدة إذا كانت موجودة.
+                if os.path.exists(DATA_FILE):
+                    try:
+                        with open(DATA_FILE, "r", encoding="utf-8") as f:
+                            old_data = json.load(f)
+                        cur.execute(
+                            "INSERT INTO bot_storage (id, data) VALUES (1, %s)",
+                            (Json(old_data),)
+                        )
+                        conn.commit()
+                        print("✅ تم ترحيل course_files.json إلى PostgreSQL")
+                        return old_data
+                    except Exception as e:
+                        conn.rollback()
+                        print(f"⚠️ تعذر ترحيل course_files.json: {e}")
+
+                cur.execute("INSERT INTO bot_storage (id, data) VALUES (1, %s)", (Json({}),))
+                conn.commit()
+                print("✅ تم إنشاء مخزن الملفات الدائم")
+                return {}
+        finally:
+            conn.close()
+
     if os.path.exists(DATA_FILE):
         try:
             with open(DATA_FILE, "r", encoding="utf-8") as f:
@@ -43,13 +115,35 @@ def load_course_files():
             print(f"Error loading data: {e}")
     return {}
 
+
 def save_course_files():
+    if DATABASE_URL:
+        conn = _db_connect()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO bot_storage (id, data, updated_at)
+                    VALUES (1, %s, NOW())
+                    ON CONFLICT (id) DO UPDATE
+                    SET data = EXCLUDED.data, updated_at = NOW()
+                """, (Json(COURSE_FILES),))
+                conn.commit()
+            return
+        except Exception as e:
+            conn.rollback()
+            print(f"❌ Error saving data to PostgreSQL: {e}")
+        finally:
+            conn.close()
+        return
+
     try:
         with open(DATA_FILE, "w", encoding="utf-8") as f:
             json.dump(COURSE_FILES, f, ensure_ascii=False, indent=4)
     except Exception as e:
         print(f"Error saving data: {e}")
 
+
+init_database()
 COURSE_FILES = load_course_files()
          
          
@@ -578,7 +672,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
           
     is_media_message = bool(update.message.document or update.message.photo or update.message.video or update.message.audio)
 
-    # معالجة وضع المطور لرفع الملفات واستخراج المعرفات بوضوح تام
+    # 1. الأولوية المطلقة لوضع المطور لمعالجة واستخراج الـ ID فوراً
     if user_id == ADMIN_ID and "waiting_for_file" in context.user_data and is_media_message:          
         if update.message.document:          
             file_id = update.message.document.file_id
@@ -620,7 +714,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             COURSE_FILES[p_key] = {"file_id": file_id, "type": file_type}
             save_course_files()
             await update.message.reply_text(
-                f"✅ **تم الحفظ بنجاح!**\n🔑 **معرف الملف (file_id):**\n`{file_id}`",
+                f"✅ **تم الحفظ بنجاح!**\n\n🔑 **معرف الملف (file_id):**\n`{file_id}`",
                 parse_mode="Markdown"
             )
             context.user_data.pop("waiting_for_file", None)
@@ -643,7 +737,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             save_course_files()
             total_files = len(COURSE_FILES[g_key]["files"])
             await update.message.reply_text(
-                f"✅ **تم الحفظ بنجاح!** (إجمالي: {total_files})\n🔑 **معرف الملف (file_id):**\n`{file_id}`",
+                f"✅ **تم الحفظ بنجاح!** (إجمالي: {total_files})\n\n🔑 **معرف الملف (file_id):**\n`{file_id}`",
                 parse_mode="Markdown"
             )
             return
@@ -665,7 +759,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         total_files = len(COURSE_FILES[course_id][service])          
         await update.message.reply_text(          
-            f"✅ **تم الحفظ بنجاح!** (إجمالي الملفات هنا: {total_files})\n🔑 **معرف الملف (file_id):**\n`{file_id}`",          
+            f"✅ **تم الحفظ بنجاح!** (إجمالي الملفات هنا: {total_files})\n\n🔑 **معرف الملف (file_id):**\n`{file_id}`",          
             parse_mode="Markdown"          
         )          
         return          
@@ -802,7 +896,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "المستوى السادس": "6", "المستوى السابع": "7", "المستوى الثامن": "8"
         }
         level = level_map[text]
-        context.user_data["current_level"] = level  # حفظ المستوى الحالي لعمل زر رجوع ذكي ودقيق
+        context.user_data["current_level"] = level
         prefix = context.user_data.get("current_specialty_prefix")
         specialty = context.user_data.get("current_specialty", "التخصص")
         
@@ -989,7 +1083,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # =========================================================          
-    # زر الرجوع الذكي والمضبوط بدقة تامة (بدون أي أخطاء أو قفزات)
+    # زر الرجوع الذكي والمضبوط بدقة تامة 
     # =========================================================          
     if text == "⬅️ رجوع":
         state = context.user_data.get("menu_state", "main")
@@ -1057,7 +1151,6 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 context.user_data["menu_state"] = "islam"
                 await update.message.reply_text("مواد السلم - ISLAM\n\nاختر المقرر المطلوب:", reply_markup=islam_reply_keyboard())
             else:
-                # عودة دقيقة لقائمة مواد المستوى بدلاً من الكليات مباشرة
                 prefix = context.user_data.get("current_specialty_prefix")
                 level = context.user_data.get("current_level", "3")
                 specialty = context.user_data.get("current_specialty", "التخصص")

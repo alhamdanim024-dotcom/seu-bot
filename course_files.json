@@ -1,0 +1,1366 @@
+{
+    "stat101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "econ101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "acct101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "stat201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "fin101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt211": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "ecom101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "econ201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "ecom201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt301": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt311": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "acct201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "acct301": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt321": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt322": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "acct302": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt401": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "acct401": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "acct403": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "acct402": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law401": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "acct322": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "acct422": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "acct430": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mis201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt312": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt323": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt324": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt402": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt403": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt404": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt421": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt422": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "mgt430": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "ecom301": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "it401": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "it403": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "it404": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law402": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "it402": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "ecom421": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "ecom402": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "ecom430": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "fin201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "fin301": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "fin401": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "fin402": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "fin403": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "fin405": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "fin406": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "fin424": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "fin408": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_sci101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs230": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_eng103": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_math150": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs231": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_sci201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs240": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs241": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs242": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs243": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_math251": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs350": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs351": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs352": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs353": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs360": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_stat101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs361": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs362": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs363": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs364": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs470": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs471": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs479": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs475": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs476": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs489": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs480": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs481": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs477": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs478": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_cs_cs499": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it231": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it232": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it233": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_math150": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_sci101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it241": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it244": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it245": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_eng103": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_math251": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_sci201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it351": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it352": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it353": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it354": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_stat101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it361": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it362": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it363": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it364": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it365": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it474": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it478": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it475": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it476": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it479": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it484": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it488": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it485": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it487": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it489": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_it_it499": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_sci101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds230": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_eng103": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_math150": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds231": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_math251": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds240": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_math241": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds242": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds243": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_sci201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds350": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds351": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_stat201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds352": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds353": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_biol101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_hcm101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc121": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_hcm102": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_biol102": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_biol103": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_hcm113": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc131": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc151": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc181": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc212": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc241": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc261": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc271": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc281": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_hcm213": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc215": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc216": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc231": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc273": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc274": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc311": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc312": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc313": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc331": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc372": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc373": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc374": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_public_phc314": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it231": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it232": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_bio101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_phc121": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hcm101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hcm102": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it244": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_bio102": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it245": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_phc131": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hcm113": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it351": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it352": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it353": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_phc212": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hci111": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hcm213": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it361": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it362": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_phc215": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_phc216": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hci112": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hci214": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it475": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_it476": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hci213": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_phc312": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hci315": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hci314": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "health_info_hci316": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_comm003": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed102": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed103": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_arb211": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_math003": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed201": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed202": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed203": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed204": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_arb260": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed205": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed206": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed207": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmps101": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "dmed_dmed208": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_math003": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_comm003": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law121": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law122": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law123": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law211": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law212": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law213": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law214": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law221": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law222": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law223": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law224": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law225": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law311": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law312": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law313": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law314": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law315": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law321": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law322": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law323": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law324": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law325": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law411": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law412": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law413": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law414": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law415": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "law_law416": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "math001": {
+        "book": [
+            "BQACAgQAAxkBAAIBOmqF101Fpe4r5jcv459IWvV5hudYAAJVJgAC_KIoUMzBpoUM_8AfPQQ"
+        ],
+        "summary": [
+            "BQACAgQAAxkBAAIBPGqF14EtfEGsHIaba9qGMf3zuM2AAAJWJgAC_KIoUOlmXB6q7iFBPQQ",
+            "BQACAgQAAxkBAAIBPmqF14MAAfDiZx9Qz7094qhG5heEsgACVyYAAvyiKFCYzM7GLOw7FT0E",
+            "BQACAgQAAxkBAAIBQGqF14wgV4VVDlf5HDNmbu2IYhBSAAJYJgAC_KIoUPUB6yMXL5njPQQ",
+            "BQACAgQAAxkBAAIBQmqF148Zw2fBDg9cKaVBmw_rB3TwAAJZJgAC_KIoUHYgebUBOkNqPQQ",
+            "BQACAgQAAxkBAAIBRGqF15iApEsBxQMTFYRGcOLeaRp-AAJaJgAC_KIoUEyh-xsvf5DEPQQ",
+            "BQACAgQAAxkBAAIBRmqF15zvHNlPtlosvTojmHr_fPHIAAJbJgAC_KIoUKJff4ewEQfoPQQ",
+            "BQACAgQAAxkBAAIBSGqF16ltymT7ZH9tLXU1w2OdQVR1AAJcJgAC_KIoUEzrmZgUipWVPQQ",
+            "BQACAgQAAxkBAAIBSmqF168lA3uB3QIoPJf9FD3oYvpPAAJdJgAC_KIoULbd8RQTxXsCPQQ",
+            "BQACAgQAAxkBAAIBTGqF17GQlzD6ztHEAAEaEqVP1Pnc2AACXiYAAvyiKFBkgygEZhzmSD0E",
+            "BQACAgQAAxkBAAIBTmqF17b7yyj_d-6PrabitOmny8MTAAJfJgAC_KIoUHbTd6PaVEXiPQQ",
+            "BQACAgQAAxkBAAIBUGqF17xRZR2lmhBTSAJEpVzsEUHkAAJgJgAC_KIoUNGO7E9MzStoPQQ",
+            "BQACAgQAAxkBAAIBUmqF2BETnsx3uQqUJ6L0kxTqtqRVAAJhJgAC_KIoUNyfSgh8pGB8PQQ",
+            "BQACAgQAAxkBAAIBVGqF2BX30LmQpsLpYgqoMy7aqMRnAAJiJgAC_KIoUFZ_hyU5SyBjPQQ"
+        ]
+    },
+    "cs001": {
+        "book": [
+            "BQACAgQAAxkBAAIBvWqF9hD6-Q-K65KkhxIt8BrFaI5-AALeJwAC_KIwUBC2Szh-ZQcFPQQ",
+            "BQACAgQAAxkBAAIBw2qF_oNtQB_3sNnELFShN8kmL76dAALxJwAC_KIwUJ4isldJwH6bPQQ"
+        ],
+        "summary": [
+            "BQACAgQAAxkBAAIBxmqGAbaTJNRxvIYSbEtD31bCZu2xAAL_JwAC_KIwUCqLdrTvLSjwPQQ",
+            "BQACAgQAAxkBAAIBx2qGAcEdxm7fi9cCbFd-3o7yJ9eKAAMoAAL8ojBQKPilkuCts449BA",
+            "BQACAgQAAxkBAAIByGqGAcvKZYQjHE5Zgwd559Nb2sPvAAIBKAAC_KIwULwGwIeCrplaPQQ",
+            "BQACAgQAAxkBAAIByWqGAcxLSQABWVfaR9RMsVFIvLA6SQACAigAAvyiMFBVMiFMqIHXTT0E",
+            "BQACAgQAAxkBAAIBymqGAeCV4S2yNWfKUMRwDCpoSzYaAAIDKAAC_KIwUNArsLlEvSmyPQQ",
+            "BQACAgQAAxkBAAIBy2qGAeSrxE-1-4Y0WKfSlutE_ZM_AAIEKAAC_KIwUIlU4QQVRA-0PQQ",
+            "BQACAgQAAxkBAAIBzGqGAebDBakHrPYw0GOtetVft1giAAIFKAAC_KIwUJW_wY8omBGRPQQ",
+            "BQACAgQAAxkBAAIBzWqGAe30_CjYw5UAAcyQ7d53WDbg6AACBigAAvyiMFCYrFlgvCcIlD0E",
+            "BQACAgQAAxkBAAIBzmqGAfALTNy6mJe_FszRiuTQbwABTgACBygAAvyiMFBRoaZdxKwqTj0E",
+            "BQACAgQAAxkBAAIB0GqGAg5i5YrkjSZKh2AP4BiyZsBnAAIJKAAC_KIwUM_ZdnEhoy8vPQQ",
+            "BQACAgQAAxkBAAIB0WqGAhIoYIB99IxbsUtKQvRSor9pAAIKKAAC_KIwUAgB3zgj-XQxPQQ",
+            "BQACAgQAAxkBAAIB0mqGAhpqWcYZRIHIqq6x5lTZRaVVAAILKAAC_KIwUPQrP-RpX7MbPQQ",
+            "BQACAgQAAxkBAAIB02qGAh3sOWt9ZJ6ncVgiQnnz3xtEAAIMKAAC_KIwUIlRn_l72DYXPQQ",
+            "BQACAgQAAxkBAAIB1GqGAh8KbiQfcbwIVlqKoqUaxTQeAAINKAAC_KIwUEAxlhbSEocaPQQ",
+            "BQACAgQAAxkBAAIB1WqGAiFtxcdwoNVXXjZqmVuAxyjvAAIOKAAC_KIwUL_6UcYkOkuOPQQ",
+            "BQACAgQAAxkBAAIB1mqGAiLcjgyO_LV1jznPtDXMAr1ZAAIPKAAC_KIwUObzIoXvfz_UPQQ",
+            "BQACAgQAAxkBAAIB12qGAj247W4509MWx7WVnZxhMiOPAAIQKAAC_KIwUFXh7v1KQhipPQQ",
+            "BQACAgQAAxkBAAIB2GqGAj-gAAGr-xSQ8Vgu5O3yGYw3XQACESgAAvyiMFAjRBk6k7xndz0E",
+            "BQACAgQAAxkBAAIB2WqGAkLxYAQULiwp--v9YE07I-D5AAISKAAC_KIwUEmvOE8052PwPQQ",
+            "BQACAgQAAxkBAAIB2mqGAkIXwkyUGoA5PVRGuk6G4FzEAAITKAAC_KIwULSwSxztk9gGPQQ"
+        ],
+        "collections": [
+            "BQACAgQAAxkBAAICBWqGCGzij-vJpD8Y4mmmJ1OSO0H6AAIeKAAC_KIwUCPttO2rhDAOPQQ",
+            "BQACAgQAAxkBAAICBmqGCGxOg4RjhHsDpO4KfPtFvUHIAAIfKAAC_KIwUAVHQ4P1oAgDPQQ",
+            "BQACAgQAAxkBAAICB2qGCH_f1nuTRyPbxrbX2GEksReyAAIgKAAC_KIwUK_0832yDCq7PQQ",
+            "BQACAgQAAxkBAAICCGqGCKtHorwfCgyH_uNZO_fPYSsbAAIhKAAC_KIwUDgQfnelm946PQQ",
+            "BQACAgQAAxkBAAICCWqGCLIzdgGrbAxZLFmllDCzip4MAAIiKAAC_KIwUFnNeGzTvuOWPQQ",
+            "BQACAgQAAxkBAAICCmqGCLtVpTOVT5OlyQiab-mIVKBJAAIjKAAC_KIwUAABchN4-3DRbD0E",
+            "BQACAgQAAxkBAAICEWqGC2DQdbzWo39-LKSGW8TGIj9vAAIlKAAC_KIwUHMxbTDwlW1gPQQ",
+            "BQACAgQAAxkBAAICEmqGC2JA2o5yx4C0Ac1DY92y3ln2AAImKAAC_KIwUL21cjqN80F-PQQ"
+        ]
+    },
+    "guide_reg": {
+        "files": [
+            "BAACAgQAAxkBAAID9WqGcds-FrSS1Xw9l1ExegABbo3ECgACfygAAvyiMFCMGvozb0tzbD0E",
+            "BQACAgQAAxkBAAIECGqGdwQ5sRDnC__tIozsyOlKQFc7AAKBKAAC_KIwUIv4gctAcY_6PQQ",
+            {
+                "file_id": "BAACAgQAAxkBAAIISmqIuuh19GBQfoZkxvftWKdW3SaEAAJiHwACW1hIULmS8Gcjbgo8PQQ",
+                "type": "video",
+                "caption": "تدخل من الرابط التالي ثم اتبع الخطوات الموضحة في الفيديو\nhttps://bannservices.seu.edu.sa/StudentRegistrationSsb/\n\n\nللانضمام لقروبنا على واتساب: https://chat.whatsapp.com/GjutUvlND8RHyN2vFQqOqN?mode=gi_t"
+            },
+            {
+                "file_id": "BAACAgQAAxkBAAIISmqIuuh19GBQfoZkxvftWKdW3SaEAAJiHwACW1hIULmS8Gcjbgo8PQQ",
+                "type": "video",
+                "caption": "تدخل من الرابط التالي ثم اتبع الخطوات الموضحة في الفيديو\nhttps://bannservices.seu.edu.sa/StudentRegistrationSsb/\n\n\nللانضمام لقروبنا على واتساب: https://chat.whatsapp.com/GjutUvlND8RHyN2vFQqOqN?mode=gi_t"
+            }
+        ]
+    },
+    "computing_ds_ds360": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds361": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds362": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds363": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds364": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds470": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds471": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds472": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds479": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds473": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds474": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds480": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds481": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds489": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds482": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds483": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    },
+    "computing_ds_ds499": {
+        "book": [],
+        "summary": [],
+        "collections": []
+    }
+}
