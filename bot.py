@@ -433,7 +433,7 @@ def freshmen_guide_reply_keyboard():
 
 
 # =========================================================          
-# دوال جلب الأرشيف التلقائي واستعراض الملفات
+# دوال استعراض الملفات          
 # =========================================================          
 async def send_plan_file(update, context, specialty_prefix, specialty_name):
     chat_id = update.effective_chat.id
@@ -449,7 +449,7 @@ async def send_plan_file(update, context, specialty_prefix, specialty_name):
     if not file_id:
         msg_text = f"📋 **خطة {specialty_name}**\n\nلم تتم إضافة ملف الخطة بعد."
         if user_id == ADMIN_ID:
-            msg_text += f"\n\n🛠️ **[وضع المطور]:** أرسل ملف الـ PDF الخاص بـ ({specialty_name}) هنا ليتم حفظه وأرشفته في قناتك الخاصة للأبد!"
+            msg_text += f"\n\n🛠️ **[وضع المطور]:** أرسل ملف الـ PDF الخاص بـ ({specialty_name}) هنا ليتم أرشفته واستخراج المعرف!"
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
 
@@ -477,7 +477,7 @@ async def send_system_guide_files(update, context, guide_key, guide_title):
     if not file_list:
         msg_text = f"📌 **{guide_title}**\n\nلا توجد ملفات مضافة لهذا الدليل حالياً."
         if user_id == ADMIN_ID:
-            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل أي ملف/صورة/رابط هنا ليتم حفظه وأرشفته."
+            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل أي ملف/صورة هنا ليتم حفظه."
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
 
@@ -513,7 +513,7 @@ async def send_service_files(update, context, course_id, course_name, service):
     if not file_list:
         msg_text = f"📁 {course_name}\n\nلا توجد ملفات مضافة لهذا القسم حالياً."
         if user_id == ADMIN_ID:
-            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل الملفات أو الوسائط هنا ليتم حفظها وأرشفتها فوراً."
+            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل الملفات أو الوسائط هنا ليتم حفظها واستخراج الـ file_id فوراً."
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
 
@@ -540,7 +540,7 @@ async def send_service_files(update, context, course_id, course_name, service):
 
 
 # =========================================================          
-# دالة إرسال القائمة الرئيسية          
+# القائمة الرئيسية          
 # =========================================================          
 async def show_main_menu(chat_id, context, bot):
     context.user_data["menu_state"] = "main"
@@ -556,7 +556,7 @@ async def show_main_menu(chat_id, context, bot):
 
 
 # =========================================================          
-# أوامر البوت والمعالجة الرئيسية          
+# أوامر البوت ومعالجة الرسائل          
 # =========================================================          
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):          
@@ -578,7 +578,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
           
     is_media_message = bool(update.message.document or update.message.photo or update.message.video or update.message.audio)
 
-    # وضع المطور لرفع الملفات وأرشفتها تلقائياً واستخراج الـ file_id
+    # معالجة وضع المطور لرفع الملفات واستخراج المعرفات بوضوح تام
     if user_id == ADMIN_ID and "waiting_for_file" in context.user_data and is_media_message:          
         if update.message.document:          
             file_id = update.message.document.file_id
@@ -620,7 +620,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             COURSE_FILES[p_key] = {"file_id": file_id, "type": file_type}
             save_course_files()
             await update.message.reply_text(
-                f"✅ **تم حفظ وأرشفة الخطة بنجاح!**\n🔑 **معرف الملف (file_id):**\n`{file_id}`",
+                f"✅ **تم الحفظ بنجاح!**\n🔑 **معرف الملف (file_id):**\n`{file_id}`",
                 parse_mode="Markdown"
             )
             context.user_data.pop("waiting_for_file", None)
@@ -665,7 +665,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         total_files = len(COURSE_FILES[course_id][service])          
         await update.message.reply_text(          
-            f"✅ **تم الحفظ والأرشفة بنجاح!** (إجمالي الملفات هنا: {total_files})\n🔑 **معرف الملف (file_id):**\n`{file_id}`",          
+            f"✅ **تم الحفظ بنجاح!** (إجمالي الملفات هنا: {total_files})\n🔑 **معرف الملف (file_id):**\n`{file_id}`",          
             parse_mode="Markdown"          
         )          
         return          
@@ -731,7 +731,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         markup = course_services_reply_keyboard(course_id)
         if user_id == ADMIN_ID:
             context.user_data["waiting_for_file"] = {"course_id": course_id, "service": "book"}
-            msg_text += "\n\n🛠️ [وضع المطور]: اضغط على الخدمة أدناه لتفعيل الرفع المباشر لها."
+            msg_text += "\n\n🛠️ [وضع المطور]: اضغط على الخدمة أدناه لتفعيل الرفع."
         await update.message.reply_text(msg_text, reply_markup=markup)
         return
 
@@ -802,6 +802,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "المستوى السادس": "6", "المستوى السابع": "7", "المستوى الثامن": "8"
         }
         level = level_map[text]
+        context.user_data["current_level"] = level  # حفظ المستوى الحالي لعمل زر رجوع ذكي ودقيق
         prefix = context.user_data.get("current_specialty_prefix")
         specialty = context.user_data.get("current_specialty", "التخصص")
         
@@ -880,7 +881,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(
                 f"🛠️ [وضع المطور - جاهز للرفع]\n"
                 f"📁 المقرر: {course_name} | القسم: {text}\n"
-                f"📥 أرسل الملف الآن وسيتم حفظه واستخراج الـ file_id."
+                f"📥 أرسل الملف الآن وسيتم استخراج معرفه."
             )
 
         await send_service_files(update, context, course_id, course_name, service)
@@ -987,7 +988,9 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"🎓 **{text}**\n\n{freshmen_map[text]}", parse_mode="Markdown")
         return
 
-    # زر الرجوع الذكي
+    # =========================================================          
+    # زر الرجوع الذكي والمضبوط بدقة تامة (بدون أي أخطاء أو قفزات)
+    # =========================================================          
     if text == "⬅️ رجوع":
         state = context.user_data.get("menu_state", "main")
         
@@ -1054,8 +1057,26 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 context.user_data["menu_state"] = "islam"
                 await update.message.reply_text("مواد السلم - ISLAM\n\nاختر المقرر المطلوب:", reply_markup=islam_reply_keyboard())
             else:
-                context.user_data["menu_state"] = "colleges"
-                await update.message.reply_text("📚 التجميعات والملخصات والخطط الدراسية\n\nاختر الكلية أو القسم المطلوب:", reply_markup=colleges_reply_keyboard())
+                # عودة دقيقة لقائمة مواد المستوى بدلاً من الكليات مباشرة
+                prefix = context.user_data.get("current_specialty_prefix")
+                level = context.user_data.get("current_level", "3")
+                specialty = context.user_data.get("current_specialty", "التخصص")
+                if prefix:
+                    courses_dict = {}
+                    if prefix in COMPUTING_COURSES:
+                        courses_dict = COMPUTING_COURSES[prefix]
+                    elif prefix in HEALTH_COURSES:
+                        courses_dict = HEALTH_COURSES[prefix]
+                    elif prefix in ADMIN_FINANCIAL_COURSES:
+                        courses_dict = ADMIN_FINANCIAL_COURSES[prefix]
+                    elif prefix in THEORETICAL_COURSES:
+                        courses_dict = THEORETICAL_COURSES[prefix]
+                    courses_list = courses_dict.get(level, [])
+                    context.user_data["menu_state"] = f"level:{prefix}:{level}"
+                    await update.message.reply_text(f"{specialty}\n\n📚 المستوى {level}\n\nاختر المقرر المطلوب:", reply_markup=courses_list_reply_keyboard(courses_list, prefix))
+                else:
+                    context.user_data["menu_state"] = "colleges"
+                    await update.message.reply_text("📚 التجميعات والملخصات والخطط الدراسية\n\nاختر الكلية أو القسم المطلوب:", reply_markup=colleges_reply_keyboard())
         elif state == "math_hw_list":
             context.user_data["menu_state"] = "math_collections"
             await update.message.reply_text("🧩 تجميعات المقرر\n\nاختر القسم المطلوب:", reply_markup=math_collections_reply_keyboard())
@@ -1069,7 +1090,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # =========================================================          
-# معالجة الأزرار الشفافة والتحقق وحذف الملفات
+# معالجة الأزرار الشفافة وحذف الملفات
 # =========================================================          
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):          
     query = update.callback_query          
@@ -1136,7 +1157,7 @@ def main():
         print("❌ ضع BOT_TOKEN أولاً داخل الكود.")
         return
 
-    print("جاري تشغيل البوت مع ميزة استخراج المعرفات...")
+    print("جاري تشغيل البوت...")
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
