@@ -29,6 +29,11 @@ GROUP_URL = "https://t.me/SEU_Students2"
 WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3"
 WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029VbE4u8MKWEKudwnk8N1o"
 
+# روابط خدمة الحلول والاستفسارات والمستجدات
+SOLUTIONS_WHATSAPP_URL = "https://wa.me/966545973112"
+INQUIRIES_GROUP_URL = "https://chat.whatsapp.com/GjutUvlND8RHyN2vFQqOqN?mode=gi_t"
+NEWS_GROUP_URL = "https://chat.whatsapp.com/KaIfSrXQjsY4zBQm23X9XC?s=cl&p=a&mlu=0&ilr=4"
+
 DATA_FILE = "course_files.json"  # نسخة محلية احتياطية/لترحيل البيانات القديمة
 
 
@@ -369,7 +374,8 @@ def main_reply_keyboard():
     return ReplyKeyboardMarkup([          
         ["📚 الكتب والتجميعات والملخصات والخطط الدراسية"],          
         ["دليل الوصول للخدمات الإلكترونية"],          
-        ["🎓 دليل المستجدين", "📅 التقويم الأكاديمي 1448"]          
+        ["🎓 خدمة الحلول", "📅 التقويم الأكاديمي 1448"],
+        ["💬 للاستفسارات والرد على اسئلتكم ومتابعة المستجدات"]
     ], resize_keyboard=True, input_field_placeholder="اختر من القائمة أدناه 👇")          
 
 def colleges_reply_keyboard():
@@ -782,9 +788,34 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("دليل الوصول للخدمات الإلكترونية\n\nاختر الدليل الذي تريد الوصول إليه:", reply_markup=electronic_services_reply_keyboard())
         return
 
-    if text == "🎓 دليل المستجدين":
-        context.user_data["menu_state"] = "freshmen"
-        await update.message.reply_text("🎓 دليل المستجدين\n\nاختر الدليل أو الخدمة التي تريد الوصول إليها:", reply_markup=freshmen_guide_reply_keyboard())
+    if text == "🎓 خدمة الحلول":
+        solutions_kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("📲 طلب الخدمة عبر واتساب", url=SOLUTIONS_WHATSAPP_URL)]
+        ])
+        solutions_text = (
+            "إلى جانب حرصنا على توفير الكتب والتجميعات الإلكترونية للطلاب في مكان واحد، "
+            "نوفر كذلك خدمة حلول المواد، والمخصصة للطلاب المشغولين الذين يرغبون في تخفيف ضغط "
+            "الواجبات والكويزات ومتطلبات أعمال الترم. 🤝\n\n"
+            "حلول — نسهّل عليك الترم.\n\n"
+            "لطلب الخدمة عبر واتساب:\n"
+            "https://wa.me/966545973112"
+        )
+        await update.message.reply_text(
+            solutions_text,
+            reply_markup=solutions_kb,
+            disable_web_page_preview=True
+        )
+        return
+
+    if text == "💬 للاستفسارات والرد على اسئلتكم ومتابعة المستجدات":
+        inquiry_kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("💬 قروب الاستفسارات", url=INQUIRIES_GROUP_URL)],
+            [InlineKeyboardButton("📰 قروب الأخبار الهامة والمساعدات", url=NEWS_GROUP_URL)]
+        ])
+        await update.message.reply_text(
+            "اختر المجموعة التي تريد الوصول إليها:",
+            reply_markup=inquiry_kb
+        )
         return
 
     if text == "📅 التقويم الأكاديمي 1448":
