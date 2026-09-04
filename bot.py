@@ -28,7 +28,6 @@ GROUP_USERNAME = "@SEU_Students2"
 GROUP_URL = "https://t.me/SEU_Students2"
 WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3"
 WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029VbE4u8MKWEKudwnk8N1o"
-ARCHIVE_WHATSAPP_URL = "https://whatsapp.com/channel/0029Vb8YkYEFSAt4GoI9fZ2h"
 
 # روابط خدمة الحلول والاستفسارات والمستجدات
 SOLUTIONS_WHATSAPP_URL = "https://wa.me/966545973112"
@@ -464,9 +463,6 @@ def islam_reply_keyboard():
 def levels_reply_keyboard(prefix):
     keyboard = [["📄 ملف الخطة الدراسية"]]
     if prefix != "translation":
-        # المستوى الثاني متاح فقط لتخصصي الإعلام الرقمي والقانون
-        if prefix in ["digital_media", "law"]:
-            keyboard.append(["المستوى الثاني"])
         keyboard.extend([
             ["المستوى الرابع", "المستوى الثالث"],
             ["المستوى السادس", "المستوى الخامس"],
@@ -516,11 +512,11 @@ def math_hw_reply_keyboard():
 
 def electronic_services_reply_keyboard():
     return ReplyKeyboardMarkup([
-        ["كيفية استخراج إفادة", "طريقة معرفة الغيابات"],
+        ["طريقة تصفح الشعب", "طريقة تسجيل المواد"],
+        ["طريقة سداد الرسوم", "طريقة الرفع لمساعد التسجيل"],
         ["طريقة الوصول للجدول الدراسي"],
-        ["طريقة تسجيل المواد", "طريقة تصفح الشعب"],
-        ["طريقة سداد الرسوم", "طريقة رفع أعذار التغيب عن الاختبارات"],
-        ["طريقة الرفع لمساعد التسجيل"],
+        ["كيفية استخراج افادة"],
+        ["طريقة رفع اعذار التغيب عن الاختبارات"],
         ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
     ], resize_keyboard=True, input_field_placeholder="اختر الخدمة المطلوبة 👇")
 
@@ -567,20 +563,6 @@ async def send_plan_file(update, context, specialty_prefix, specialty_name):
         print(f"Error sending plan file: {error}")
 
 
-def archive_channel_keyboard():
-    return InlineKeyboardMarkup([
-        [InlineKeyboardButton("📢 انضم إلى قناة الأرشيف على واتساب", url=ARCHIVE_WHATSAPP_URL)]
-    ])
-
-
-def archive_invite_text():
-    return (
-        "📢 **قناة الأرشيف على واتساب**\n\n"
-        "انضم إلى قناة الأرشيف ليصلك كل جديد أولًا بأول 🔔\n"
-        "قناة مهمة توفر لك آخر الأخبار والتحديثات والمعلومات المهمة للطلاب."
-    )
-
-
 async def send_system_guide_files(update, context, guide_key, guide_title):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
@@ -590,25 +572,14 @@ async def send_system_guide_files(update, context, guide_key, guide_title):
         guide_data = {"files": guide_data}
         COURSE_FILES[guide_key] = guide_data
 
-    content = guide_data.get("content", "")
     file_list = guide_data.get("files", [])
 
-    if not content and not file_list:
-        msg_text = f"📌 **{guide_title}**\n\nلا يوجد محتوى مضاف لهذا الدليل حالياً."
+    if not file_list:
+        msg_text = f"📌 **{guide_title}**\n\nلا توجد ملفات مضافة لهذا الدليل حالياً."
         if user_id == ADMIN_ID:
-            msg_text += (
-                "\n\n🛠️ **[وضع المطور]:** أرسل محتوى الدليل هنا، "
-                "ويمكنك إرسال نص أو ملف/صورة."
-            )
+            msg_text += "\n\n🛠️ **[وضع المطور]:** أرسل أي ملف/صورة هنا ليتم حفظه."
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
-
-    if content:
-        await update.message.reply_text(
-            f"📌 **{guide_title}**\n\n{content}",
-            parse_mode="Markdown",
-            reply_markup=archive_channel_keyboard()
-        )
 
     for idx, item in enumerate(file_list):
         f_id = item.get("file_id")
@@ -616,15 +587,9 @@ async def send_system_guide_files(update, context, guide_key, guide_title):
         caption = item.get("caption", "")
 
         try:
-            rows = [
-                [InlineKeyboardButton("📢 انضم إلى قناة الأرشيف على واتساب", url=ARCHIVE_WHATSAPP_URL)]
-            ]
+            markup = None
             if user_id == ADMIN_ID:
-                rows.insert(0, [InlineKeyboardButton(
-                    f"🗑️ حذف هذا الملف ({idx+1})",
-                    callback_data=f"del_guide:{guide_key}:{idx}"
-                )])
-            markup = InlineKeyboardMarkup(rows)
+                markup = InlineKeyboardMarkup([[InlineKeyboardButton(f"🗑️ حذف هذا الملف ({idx+1})", callback_data=f"del_guide:{guide_key}:{idx}")]])
 
             if f_type == "photo":
                 await context.bot.send_photo(chat_id=chat_id, photo=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
@@ -634,15 +599,8 @@ async def send_system_guide_files(update, context, guide_key, guide_title):
                 await context.bot.send_audio(chat_id=chat_id, audio=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
             else:
                 await context.bot.send_document(chat_id=chat_id, document=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
-        except Exception as error:
+        except Exception as error:          
             print(f"Error sending guide file: {error}")
-
-    if file_list and not content:
-        await update.message.reply_text(
-            archive_invite_text(),
-            parse_mode="Markdown",
-            reply_markup=archive_channel_keyboard()
-        )
 
 
 async def send_service_files(update, context, course_id, course_name, service):
@@ -691,21 +649,10 @@ async def show_main_menu(chat_id, context, bot):
         "كل ما يحتاجه طالب الجامعة السعودية الإلكترونية في مكان واحد:\n\n"          
         "📘 الكتب\n"          
         "📚 الملخصات\n"          
-        "🧩 تجميعات لاختبارات سابقة\n\n"
-        "📢 ولا تفوّت آخر الأخبار والتحديثات!\n"
-        "انضم إلى قناة الأرشيف على واتساب ليصلك كل جديد أولًا بأول 🔔\n\n"
+        "🧩 تجميعات لاختبارات سابقة\n\n"          
         "ابدأ باختيار القسم من القائمة 👇"          
     )          
-    await bot.send_message(
-        chat_id=chat_id,
-        text=text,
-        reply_markup=archive_channel_keyboard()
-    )
-    await bot.send_message(
-        chat_id=chat_id,
-        text="👇 اختر من القائمة الرئيسية للوصول إلى خدمات البوت:",
-        reply_markup=main_reply_keyboard()
-    )
+    await bot.send_message(chat_id=chat_id, text=text, reply_markup=main_reply_keyboard())
 
 
 # =========================================================          
@@ -823,29 +770,6 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )          
         return          
 
-    # حفظ المحتوى النصي لأدلة الخدمات الإلكترونية من حساب الأدمن
-    if user_id == ADMIN_ID and text and "waiting_for_file" in context.user_data:
-        target = context.user_data["waiting_for_file"]
-        if "guide_key" in target:
-            guide_key = target["guide_key"]
-            guide_title = target.get("guide_title", "الدليل")
-            guide_data = COURSE_FILES.get(guide_key, {})
-            if isinstance(guide_data, list):
-                guide_data = {"files": guide_data}
-            if not isinstance(guide_data, dict):
-                guide_data = {}
-            guide_data["content"] = text
-            guide_data.setdefault("files", [])
-            COURSE_FILES[guide_key] = guide_data
-            save_course_files()
-            context.user_data.pop("waiting_for_file", None)
-            await update.message.reply_text(
-                f"✅ **تم حفظ محتوى «{guide_title}» بنجاح.**\n\n"
-                "سيظهر المحتوى للطلاب مع زر قناة الأرشيف.",
-                parse_mode="Markdown"
-            )
-            return
-
     if user_id == ADMIN_ID:
         context.user_data.pop("waiting_for_file", None)
 
@@ -895,15 +819,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if text == "📅 التقويم الأكاديمي 1448":
-        await update.message.reply_text(
-            "📅 **التقويم الأكاديمي 1448**\n\n"
-            "سيتم إضافة ملف التقويم الأكاديمي هنا عند توفره.\n\n"
-            "📢 **قناة الأرشيف على واتساب**\n"
-            "انضم إلى قناة الأرشيف ليصلك كل جديد أولًا بأول 🔔\n"
-            "قناة مهمة توفر لك آخر الأخبار والتحديثات والمعلومات المهمة للطلاب.",
-            parse_mode="Markdown",
-            reply_markup=archive_channel_keyboard()
-        )
+        await update.message.reply_text("📅 سيتم إضافة ملف التقويم الأكاديمي 1448 هنا.")
         return
 
     # الكليات
@@ -1005,9 +921,9 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("مواد السلم - ISLAM\n\nاختر المقرر المطلوب:", reply_markup=islam_reply_keyboard())
         return
 
-    if text in ["المستوى الثاني", "المستوى الثالث", "المستوى الرابع", "المستوى الخامس", "المستوى السادس", "المستوى السابع", "المستوى الثامن"]:
+    if text in ["المستوى الثالث", "المستوى الرابع", "المستوى الخامس", "المستوى السادس", "المستوى السابع", "المستوى الثامن"]:
         level_map = {
-            "المستوى الثاني": "2", "المستوى الثالث": "3", "المستوى الرابع": "4", "المستوى الخامس": "5",
+            "المستوى الثالث": "3", "المستوى الرابع": "4", "المستوى الخامس": "5",
             "المستوى السادس": "6", "المستوى السابع": "7", "المستوى الثامن": "8"
         }
         level = level_map[text]
@@ -1155,14 +1071,9 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     systems_map = {
-        "كيفية استخراج إفادة": "guide_statement",
-        "طريقة معرفة الغيابات": "guide_absences",
-        "طريقة الوصول للجدول الدراسي": "guide_schedule",
-        "طريقة تسجيل المواد": "guide_reg",
-        "طريقة تصفح الشعب": "guide_sections",
-        "طريقة سداد الرسوم": "guide_payment",
-        "طريقة رفع أعذار التغيب عن الاختبارات": "guide_excuse",
-        "طريقة الرفع لمساعد التسجيل": "guide_registration_assistant"
+        "طريقة تسجيل المواد": "guide_reg", "طريقة سداد الرسوم": "guide_payment",
+        "طريقة الوصول للجدول الدراسي": "guide_schedule", "طريقة رفع اعذار التغيب عن الاختبارات": "guide_excuse",
+        "كيفية استخراج افادة": "guide_statement", "طريقة تصفح الشعب": "guide_sections"
     }
     
     if text in systems_map:
