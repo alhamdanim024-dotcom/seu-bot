@@ -27,7 +27,7 @@ DATABASE_URL = os.getenv("DATABASE_URL", "")
 GROUP_USERNAME = "@SEU_Students2"
 GROUP_URL = "https://t.me/SEU_Students2"
 WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3"
-WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029VbE4u8MKWEKudwnk8N1o"
+WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029Vb8YkYEFSAt4GoI9fZ2h"
 
 # روابط خدمة الحلول والاستفسارات والمستجدات
 SOLUTIONS_WHATSAPP_URL = "https://wa.me/966545973112"
@@ -565,6 +565,22 @@ async def send_plan_file(update, context, specialty_prefix, specialty_name):
         print(f"Error sending plan file: {error}")
 
 
+async def send_archive_channel_invitation(update, context):
+    archive_kb = InlineKeyboardMarkup([
+        [InlineKeyboardButton("📢 انضم إلى قناة الأرشيف على واتساب", url=WHATSAPP_CHANNEL_URL)]
+    ])
+    archive_text = (
+        "📢 قناة الأرشيف على واتساب\n\n"
+        "انضم إلى قناة الأرشيف ليصلك كل جديد أولًا بأول 🔔\n"
+        "قناة مهمة توفر لك آخر الأخبار والتحديثات والمعلومات المهمة للطلاب."
+    )
+    await update.message.reply_text(
+        archive_text,
+        reply_markup=archive_kb,
+        disable_web_page_preview=True
+    )
+
+
 async def send_system_guide_files(update, context, guide_key, guide_title):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
@@ -652,9 +668,18 @@ async def show_main_menu(chat_id, context, bot):
         "📘 الكتب\n"          
         "📚 الملخصات\n"          
         "🧩 تجميعات لاختبارات سابقة\n\n"          
-        "ابدأ باختيار القسم من القائمة 👇"          
-    )          
-    await bot.send_message(chat_id=chat_id, text=text, reply_markup=main_reply_keyboard())
+        "📢 ولا تفوّت آخر الأخبار والتحديثات!\n"          
+        "انضم إلى قناة الأرشيف على واتساب ليصلك كل جديد أولًا بأول 🔔"          
+    )
+    archive_kb = InlineKeyboardMarkup([
+        [InlineKeyboardButton("📢 انضم إلى قناة الأرشيف على واتساب", url=WHATSAPP_CHANNEL_URL)]
+    ])
+    await bot.send_message(chat_id=chat_id, text=text, reply_markup=archive_kb, disable_web_page_preview=True)
+    await bot.send_message(
+        chat_id=chat_id,
+        text="ابدأ باختيار القسم من القائمة 👇",
+        reply_markup=main_reply_keyboard()
+    )
 
 
 # =========================================================          
@@ -821,7 +846,8 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if text == "📅 التقويم الأكاديمي 1448":
-        await update.message.reply_text("📅 سيتم إضافة ملف التقويم الأكاديمي 1448 هنا.")
+        await update.message.reply_text("📅 التقويم الأكاديمي 1448\n\nلم تتم إضافة ملف التقويم الأكاديمي بعد.")
+        await send_archive_channel_invitation(update, context)
         return
 
     # الكليات
@@ -1073,9 +1099,13 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     systems_map = {
-        "طريقة تسجيل المواد": "guide_reg", "طريقة سداد الرسوم": "guide_payment",
-        "طريقة الوصول للجدول الدراسي": "guide_schedule", "طريقة رفع اعذار التغيب عن الاختبارات": "guide_excuse",
-        "كيفية استخراج افادة": "guide_statement", "طريقة تصفح الشعب": "guide_sections"
+        "طريقة تسجيل المواد": "guide_reg",
+        "طريقة سداد الرسوم": "guide_payment",
+        "طريقة الرفع لمساعد التسجيل": "guide_registration_assistant",
+        "طريقة الوصول للجدول الدراسي": "guide_schedule",
+        "طريقة رفع اعذار التغيب عن الاختبارات": "guide_excuse",
+        "كيفية استخراج افادة": "guide_statement",
+        "طريقة تصفح الشعب": "guide_sections"
     }
     
     if text in systems_map:
@@ -1085,6 +1115,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(f"🛠️ [وضع المطور] جاهز لاستقبال ملفات قسم: **{text}**.", parse_mode="Markdown")
         
         await send_system_guide_files(update, context, guide_key, text)
+        await send_archive_channel_invitation(update, context)
         return
 
     freshmen_map = {
