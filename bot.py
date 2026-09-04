@@ -246,7 +246,33 @@ THEORETICAL_COURSES = {
         "2": [("dmed_comm003", "COMM 003"), ("dmed_dmed101", "DMED 101"), ("dmed_dmed102", "DMED 102"), ("dmed_dmed103", "DMED 103"), ("dmed_arb211", "ARB 211"), ("dmed_math003", "MATH 003")],          
         "3": [("dmed_dmed201", "DMED201"), ("dmed_dmed202", "DMED202"), ("dmed_dmed203", "DMED203"), ("dmed_dmed204", "DMED204"), ("dmed_arb260", "ARB260")],          
         "4": [("dmed_dmed205", "DMED205"), ("dmed_dmed206", "DMED206"), ("dmed_dmed207", "DMED207"), ("dmed_dmps101", "DMPS101"), ("dmed_dmed208", "DMED208")],          
-        "5": [], "6": [], "7": [], "8": [],          
+        "5": [
+            ("dmed_dmed301", "DMED301"),
+            ("dmed_dmed302", "DMED302"),
+            ("dmed_dmed303", "DMED303"),
+            ("dmed_dmlo101", "DMLO101"),
+            ("dmed_dmit202", "DMIT202"),
+        ],
+        "6": [
+            ("dmed_dmed304", "DMED304"),
+            ("dmed_dmed305", "DMED305"),
+            ("dmed_dmed306", "DMED306"),
+            ("dmed_dmso101", "DMSO101"),
+            ("dmed_dmem333", "DMEM333"),
+        ],
+        "7": [
+            ("dmed_dmed402", "DMED402"),
+            ("dmed_dmed403", "DMED403"),
+            ("dmed_dmed404", "DMED404"),
+            ("dmed_dmed405", "DMED405"),
+            ("dmed_dmed406", "DMED406"),
+            ("dmed_dmed408", "DMED408"),
+        ],
+        "8": [
+            ("dmed_dmed407", "DMED407"),
+            ("dmed_dmed401", "DMED401"),
+            ("dmed_dmed409", "DMED409"),
+        ],          
     },          
     "law": {          
         "2": [("law_math003", "MATH 003"), ("law_comm003", "COMM 003"), ("law_law121", "Law 121"), ("law_law122", "Law 122"), ("law_law123", "Law 123")],          
@@ -257,8 +283,53 @@ THEORETICAL_COURSES = {
         "7": [("law_law411", "LAW 411"), ("law_law412", "LAW 412"), ("law_law413", "LAW 413"), ("law_law414", "LAW 414"), ("law_law415", "LAW 415"), ("law_law416", "LAW 416")],          
         "8": [],          
     },          
-    "translation": {          
-        "2": [], "3": [], "4": [], "5": [], "6": [], "7": [], "8": [],          
+    "translation": {
+        "2": [],
+        "3": [
+            ("translation_eng201", "ENG 201"),
+            ("translation_eng202", "ENG 202"),
+            ("translation_eng210", "ENG 210"),
+            ("translation_eng220", "ENG 220"),
+            ("translation_arb211", "ARB 211"),
+        ],
+        "4": [
+            ("translation_eng230", "ENG 230"),
+            ("translation_eng231", "ENG 231"),
+            ("translation_eng240", "ENG 240"),
+            ("translation_eng250", "ENG 250"),
+            ("translation_arb260", "ARB 260"),
+        ],
+        "5": [
+            ("translation_eng301", "ENG 301"),
+            ("translation_eng310", "ENG 310"),
+            ("translation_eng320", "ENG 320"),
+            ("translation_tra330", "TRA 330"),
+            ("translation_eng340", "ENG 340"),
+        ],
+        "6": [
+            ("translation_eng350", "ENG 350"),
+            ("translation_eng360", "ENG 360"),
+            ("translation_tra370", "TRA 370"),
+            ("translation_eng380", "ENG 380"),
+            ("translation_arb221", "ARB 221"),
+        ],
+        "7": [
+            ("translation_tra400", "TRA 400"),
+            ("translation_eng401", "ENG 401"),
+            ("translation_tra410", "TRA 410"),
+            ("translation_tra420", "TRA 420"),
+            ("translation_tra430", "TRA 430"),
+            ("translation_tra440", "TRA 440"),
+            ("translation_tra450", "TRA 450"),
+        ],
+        "8": [
+            ("translation_tra400_l8", "TRA 400"),
+            ("translation_tra460", "TRA 460"),
+            ("translation_tra470", "TRA 470"),
+            ("translation_tra480", "TRA 480"),
+            ("translation_tra490", "TRA 490"),
+            ("translation_tra499", "TRA 499"),
+        ],
     },          
 }          
          
@@ -462,7 +533,14 @@ def islam_reply_keyboard():
 
 def levels_reply_keyboard(prefix):
     keyboard = [["📄 ملف الخطة الدراسية"]]
-    if prefix != "translation":
+    if prefix == "translation":
+        # مستويات اللغة والترجمة المتاحة حسب الخطة المرفقة: 3 إلى 8
+        keyboard.extend([
+            ["المستوى الرابع", "المستوى الثالث"],
+            ["المستوى السادس", "المستوى الخامس"],
+            ["المستوى الثامن", "المستوى السابع"]
+        ])
+    else:
         # المستوى الثاني متاح فقط لتخصصي الإعلام الرقمي والقانون
         if prefix in ["digital_media", "law"]:
             keyboard.append(["المستوى الثاني"])
