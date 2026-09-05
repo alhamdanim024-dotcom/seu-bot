@@ -33,6 +33,7 @@ WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/0029Vb8YkYEFSAt4GoI9fZ2h"
 SOLUTIONS_WHATSAPP_URL = "https://wa.me/966545973112"
 INQUIRIES_GROUP_URL = "https://chat.whatsapp.com/GjutUvlND8RHyN2vFQqOqN?mode=gi_t"
 NEWS_GROUP_URL = "https://chat.whatsapp.com/KaIfSrXQjsY4zBQm23X9XC?s=cl&p=a&mlu=0&ilr=4"
+FRESHMEN_INQUIRIES_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3"
 
 DATA_FILE = "course_files.json"  # نسخة محلية احتياطية/لترحيل البيانات القديمة
 
@@ -444,7 +445,7 @@ async def send_subscription_message(update, context):
 def main_reply_keyboard():          
     return ReplyKeyboardMarkup([          
         ["📚 الكتب والتجميعات والملخصات والخطط الدراسية"],          
-        ["دليل الوصول للخدمات الإلكترونية"],          
+        ["دليل طلبة الجامعة الإلكترونية"],          
         ["🎓 خدمة الحلول", "📅 التقويم الأكاديمي 1448"],
         ["💬 للاستفسارات والرد على اسئلتكم ومتابعة المستجدات"]
     ], resize_keyboard=True, input_field_placeholder="اختر من القائمة أدناه 👇")          
@@ -591,25 +592,47 @@ def math_hw_reply_keyboard():
         ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
     ], resize_keyboard=True, input_field_placeholder="اختر الواجب المطلوب 👇")
 
-def electronic_services_reply_keyboard():
+def student_guide_reply_keyboard():
+    return ReplyKeyboardMarkup([
+        ["دليل التسجيل", "دليل الأنظمة والخدمات الإلكترونية"],
+        ["دليل الاختبارات الإلكترونية", "دليل المستجدين"],
+        # زر «أخرى» طويل ومستقل لإضافة أي أدلة أو خدمات مستقبلية بسهولة
+        ["أخرى"],
+        ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
+    ], resize_keyboard=True, input_field_placeholder="اختر الدليل المطلوب 👇")
+
+def registration_guide_reply_keyboard():
     return ReplyKeyboardMarkup([
         ["طريقة تصفح الشعب", "طريقة تسجيل المواد"],
-        ["طريقة سداد الرسوم", "طريقة الرفع لمساعد التسجيل"],
-        ["كيفية استخراج افادة", "طريقة الوصول للجدول الدراسي"],
-        ["طريقة رفع اعذار التغيب عن الاختبارات"],
+        ["طريقة الرفع لمساعد التسجيل", "طريقة الوصول للجدول الدراسي"],
+        ["طريقة الوصول لايميل المدرس"],
         ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
-    ], resize_keyboard=True, input_field_placeholder="اختر الخدمة المطلوبة 👇")
+    ], resize_keyboard=True, input_field_placeholder="اختر دليل التسجيل المطلوب 👇")
+
+def systems_services_guide_reply_keyboard():
+    return ReplyKeyboardMarkup([
+        ["طريقة التأجيل", "طريقة الانسحاب"],
+        ["طريقة معرفة الغيابات", "طريقة استخراج إفادة"],
+        ["طريقة رفع أعذار التغيب عن الاختبارات"],
+        ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
+    ], resize_keyboard=True, input_field_placeholder="اختر الدليل المطلوب 👇")
+
+def electronic_exams_guide_reply_keyboard():
+    return ReplyKeyboardMarkup([
+        ["طريقة تحميل برنامج الاختبار", "طريقة تحديث برنامج الاختبار"],
+        ["طريقة أداء الاختبار التجريبي", "اذا واجهتك مشاكل تقنية"],
+        ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
+    ], resize_keyboard=True, input_field_placeholder="اختر دليل الاختبار المطلوب 👇")
 
 def freshmen_guide_reply_keyboard():
     return ReplyKeyboardMarkup([
-        ["تطبيق البلاك بورد"],
-        ["قناة الأخبار الهامة للمستجدين على واتساب"],
+        ["نظام الدراسة"],
+        ["قروب الاستفسارات للمستجدين"],
         ["مواصفات اللابتوب المطلوب", "طريقة تفعيل الحساب الجامعي"],
         ["خطوات تفعيل البريد الجامعي", "طريقة حضور المحاضرات"],
         ["شروط معادلة المواد", "ستيب - STEP"],
-        ["قروب الاستفسارات والإجابة على اسئلتكم"],
         ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
-    ], resize_keyboard=True, input_field_placeholder="اختر الدليل أو الخدمة المطلوبة 👇")
+    ], resize_keyboard=True, input_field_placeholder="اختر دليل المستجدين المطلوب 👇")
 
 
 # =========================================================          
@@ -644,6 +667,7 @@ async def send_plan_file(update, context, specialty_prefix, specialty_name):
 
 
 async def send_archive_channel_invitation(update, context):
+    # زر Inline شفاف يحتوي على رابط قناة الأرشيف على واتساب
     archive_kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("📢 انضم إلى قناة الأرشيف على واتساب", url=WHATSAPP_CHANNEL_URL)]
     ])
@@ -888,9 +912,33 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("📚 التجميعات والملخصات والخطط الدراسية\n\nاختر الكلية أو القسم المطلوب:", reply_markup=colleges_reply_keyboard())
         return
 
-    if text == "دليل الوصول للخدمات الإلكترونية":
-        context.user_data["menu_state"] = "systems"
-        await update.message.reply_text("دليل الوصول للخدمات الإلكترونية\n\nاختر الدليل الذي تريد الوصول إليه:", reply_markup=electronic_services_reply_keyboard())
+    if text in ["دليل الوصول للخدمات الإلكترونية", "دليل طلبة الجامعة الإلكترونية"]:
+        context.user_data["menu_state"] = "student_guide"
+        await update.message.reply_text("دليل طلبة الجامعة الإلكترونية\n\nاختر الدليل الذي تريد الوصول إليه:", reply_markup=student_guide_reply_keyboard())
+        return
+
+    if text == "دليل التسجيل":
+        context.user_data["menu_state"] = "registration_guide"
+        await update.message.reply_text("📘 دليل التسجيل\n\nاختر الدليل الذي تريد الوصول إليه:", reply_markup=registration_guide_reply_keyboard())
+        return
+
+    if text == "دليل الأنظمة والخدمات الإلكترونية":
+        context.user_data["menu_state"] = "systems_services_guide"
+        await update.message.reply_text("🖥️ دليل الأنظمة والخدمات الإلكترونية\n\nاختر الدليل الذي تريد الوصول إليه:", reply_markup=systems_services_guide_reply_keyboard())
+        return
+
+    if text == "دليل الاختبارات الإلكترونية":
+        context.user_data["menu_state"] = "electronic_exams_guide"
+        await update.message.reply_text("📝 دليل الاختبارات الإلكترونية\n\nاختر الدليل الذي تريد الوصول إليه:", reply_markup=electronic_exams_guide_reply_keyboard())
+        return
+
+    if text == "دليل المستجدين":
+        context.user_data["menu_state"] = "freshmen"
+        await update.message.reply_text("🎓 دليل المستجدين\n\nاختر الدليل الذي تريد الوصول إليه:", reply_markup=freshmen_guide_reply_keyboard())
+        return
+
+    if text == "أخرى":
+        await update.message.reply_text("📌 سيتم إضافة المزيد من الأدلة والخدمات هنا قريبًا.")
         return
 
     if text == "🎓 خدمة الحلول":
@@ -898,10 +946,12 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("📲 طلب الخدمة عبر واتساب", url=SOLUTIONS_WHATSAPP_URL)]
         ])
         solutions_text = (
-            "إلى جانب حرصنا على توفير الكتب والتجميعات الإلكترونية للطلاب في مكان واحد، "
-            "نوفر كذلك خدمة حلول المواد، والمخصصة للطلاب المشغولين الذين يرغبون في تخفيف ضغط "
-            "الواجبات والكويزات ومتطلبات أعمال الترم. 🤝\n\n"
-            "حلول — نسهّل عليك الترم.\n\n"
+            "بالإضافة إلى توفير الكتب والتجميعات والملخصات في مكان واحد، وفرنا لكم خدمة حلول المواد، "
+            "والمخصصة للطلاب المشغولين وكل من يرغب في تخفيف ضغط الدراسة.\n"
+            "الخدمات تشمل حضور المحاضرات وحل الواجبات والكويزات ومتطلبات أعمال الترم يمكنك طلب احد الخدمات "
+            "المتوفرة او الاشتراك في الخدمات كاملة. 🤝\n"
+            "تغطية شاملة لجميع المقررات لطلاب الجامعة السعودية الإلكترونية (SEU)\n\n"
+            "منصة حلول– معك في كل خطوة نحو التفوق.\n\n"
             "لطلب الخدمة عبر واتساب:\n"
             "https://wa.me/966545973112"
         )
@@ -1177,13 +1227,27 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     systems_map = {
+        "طريقة تصفح الشعب": "guide_sections",
         "طريقة تسجيل المواد": "guide_reg",
-        "طريقة سداد الرسوم": "guide_payment",
         "طريقة الرفع لمساعد التسجيل": "guide_registration_assistant",
         "طريقة الوصول للجدول الدراسي": "guide_schedule",
-        "طريقة رفع اعذار التغيب عن الاختبارات": "guide_excuse",
-        "كيفية استخراج افادة": "guide_statement",
-        "طريقة تصفح الشعب": "guide_sections"
+        "طريقة الوصول لايميل المدرس": "guide_teacher_email",
+        "طريقة التأجيل": "guide_defer",
+        "طريقة الانسحاب": "guide_withdrawal",
+        "طريقة معرفة الغيابات": "guide_absences",
+        "طريقة استخراج إفادة": "guide_statement",
+        "طريقة رفع أعذار التغيب عن الاختبارات": "guide_excuse",
+        "طريقة تحميل برنامج الاختبار": "guide_exam_download",
+        "طريقة تحديث برنامج الاختبار": "guide_exam_update",
+        "طريقة أداء الاختبار التجريبي": "guide_exam_practice",
+        "اذا واجهتك مشاكل تقنية": "guide_exam_technical",
+        "نظام الدراسة": "guide_study_system",
+        "مواصفات اللابتوب المطلوب": "guide_laptop",
+        "طريقة تفعيل الحساب الجامعي": "guide_university_account",
+        "خطوات تفعيل البريد الجامعي": "guide_university_email",
+        "طريقة حضور المحاضرات": "guide_lectures",
+        "شروط معادلة المواد": "guide_equivalency",
+        "ستيب - STEP": "guide_step"
     }
     
     if text in systems_map:
@@ -1196,32 +1260,15 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_archive_channel_invitation(update, context)
         return
 
-    freshmen_map = {
-        "تطبيق البلاك بورد": "دليل تطبيق البلاك بورد.",
-        "مواصفات اللابتوب المطلوب": "مواصفات اللابتوب المطلوب للدراسة.",
-        "طريقة تفعيل الحساب الجامعي": "خطوات تفعيل الحساب الجامعي.",
-        "خطوات تفعيل البريد الجامعي": "خطوات تفعيل البريد الجامعي.",
-        "طريقة حضور المحاضرات": "طريقة حضور المحاضرات الافتراضية.",
-        "شروط معادلة المواد": "شروط وضوابط معادلة المواد.",
-        "ستيب - STEP": "معلومات اختبار القدرات لغير الناطقين أو اختبار STEP."
-    }
-    
-    if text == "قروب الاستفسارات والإجابة على اسئلتكم":
-        whatsapp_kb = InlineKeyboardMarkup([
-            [InlineKeyboardButton("💬 اضغط هنا للانتقال إلى قروب الاستفسارات", url=WHATSAPP_GROUP_URL)]
+    if text == "قروب الاستفسارات للمستجدين":
+        freshmen_kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("💬 انضم إلى قروب الاستفسارات للمستجدين", url=FRESHMEN_INQUIRIES_GROUP_URL)]
         ])
-        await update.message.reply_text("💬 **قروب الاستفسارات والإجابة على اسئلتكم**\n\nانضم مباشرة عبر الزر أدناه:", reply_markup=whatsapp_kb, parse_mode="Markdown")
-        return
-
-    if text == "قناة الأخبار الهامة للمستجدين على واتساب":
-        channel_kb = InlineKeyboardMarkup([
-            [InlineKeyboardButton("📢 اضغط هنا للانتقال إلى قناة الأخبار", url=WHATSAPP_CHANNEL_URL)]
-        ])
-        await update.message.reply_text("📢 **قناة الأخبار الهامة للمستجدين**\n\nتابع آخر الأخبار عبر الزر أدناه:", reply_markup=channel_kb, parse_mode="Markdown")
-        return
-
-    if text in freshmen_map:
-        await update.message.reply_text(f"🎓 **{text}**\n\n{freshmen_map[text]}", parse_mode="Markdown")
+        await update.message.reply_text(
+            "💬 **قروب الاستفسارات للمستجدين**\n\nللاستفسارات والمساعدة الخاصة بالطلاب المستجدين، انضم إلى القروب عبر الزر أدناه:",
+            reply_markup=freshmen_kb,
+            parse_mode="Markdown"
+        )
         return
 
     # =========================================================          
@@ -1232,8 +1279,11 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if state == "colleges":
             await show_main_menu(chat_id, context, context.bot)
-        elif state in ["systems", "freshmen"]:
+        elif state == "student_guide":
             await show_main_menu(chat_id, context, context.bot)
+        elif state in ["registration_guide", "systems_services_guide", "electronic_exams_guide", "freshmen"]:
+            context.user_data["menu_state"] = "student_guide"
+            await update.message.reply_text("دليل طلبة الجامعة الإلكترونية\n\nاختر الدليل الذي تريد الوصول إليه:", reply_markup=student_guide_reply_keyboard())
         elif state == "prep":
             context.user_data["menu_state"] = "colleges"
             await update.message.reply_text("📚 التجميعات والملخصات والخطط الدراسية\n\nاختر الكلية أو القسم المطلوب:", reply_markup=colleges_reply_keyboard())
