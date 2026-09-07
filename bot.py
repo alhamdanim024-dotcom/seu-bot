@@ -822,9 +822,11 @@ async def show_main_menu(chat_id, context, bot):
 # =========================================================          
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):          
-    # إلغاء شرط الانضمام عند الضغط على /start
-    # يمكن للمستخدم الدخول إلى القائمة الرئيسية مباشرة.
+    # إعادة شرط الانضمام عند الضغط على /start
     context.user_data.pop("waiting_for_file", None)
+    if not await check_user_access(update, context):
+        await send_subscription_message(update, context)
+        return
     await show_main_menu(update.effective_chat.id, context, context.bot)
 
 
