@@ -35,6 +35,23 @@ INQUIRIES_GROUP_URL = "https://chat.whatsapp.com/GjutUvlND8RHyN2vFQqOqN?mode=gi_
 NEWS_GROUP_URL = "https://chat.whatsapp.com/KaIfSrXQjsY4zBQm23X9XC?s=cl&p=a&mlu=0&ilr=4"
 FRESHMEN_INQUIRIES_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3"
 
+# قروبات التحضيري والتخصص
+PREP_INQUIRIES_GROUP_URL = "https://chat.whatsapp.com/BmgT2joy3AyBx1nE0LQ1wh?s=cl&p=a&ilr=4&amv=3"
+PREP_ARCHIVE_CHANNEL_URL = "https://whatsapp.com/channel/0029VbDvg4Q0wajjtn73eL0o"
+ADMIN_ECOMMERCE_GROUP_URL = "https://chat.whatsapp.com/Cw6yl4ifdQo8LjmTDCWqut?s=cl&p=a&mlu=4&ilr=4"
+ADMIN_ACCOUNTING_GROUP_URL = "https://chat.whatsapp.com/GSFqCSAqfhJGvqGuX2hklE?s=cl&p=a&mlu=4&ilr=4"
+ADMIN_FINANCE_GROUP_URL = "https://chat.whatsapp.com/Lmi597RfmypA4ig8as2rKn?s=cl&p=a&mlu=4&ilr=4"
+ADMIN_BUSINESS_GROUP_URL = "https://chat.whatsapp.com/FKbnESu3MAD4QcHCNW9N9d?s=cl&p=a&mlu=4&ilr=4"
+IT_GROUP_URL = "https://chat.whatsapp.com/GkdYb54oFiW7Mt3PbFPoiU?s=cl&p=a&mlu=4&ilr=4"
+DS_GROUP_URL = "https://chat.whatsapp.com/Cnj7FdNN9xDGb7IIB19dQY?s=cl&p=a&mlu=4&ilr=4"
+CS_GROUP_URL = "https://chat.whatsapp.com/CVNbZ0o6OJgJQXl4dFtcfz?s=cl&p=a&mlu=4&ilr=4"
+HEALTH_GROUP_URL = "https://chat.whatsapp.com/CIL9JGSdOYu78d9HSJsGhr"
+LAW_GROUP_URL = "https://chat.whatsapp.com/E6BQ6lNUMLY2M10xesTEYo?s=cl&p=a&mlu=4&ilr=4"
+TRANSLATION_GROUP_URL = "https://chat.whatsapp.com/KykvqZGDZhy9YDs8m0mcUz?s=cl&p=a&ilr=0"
+DIGITAL_MEDIA_GROUP_URL = "https://chat.whatsapp.com/K8PJVbdkDP7DQSlnag3R9J?s=cl&p=a&mlu=4&ilr=4"
+THEORY_INQUIRIES_GROUP_URL = "https://chat.whatsapp.com/GjutUvlND8RHyN2vFQqOqN?mode=gi_t"
+THEORY_ARCHIVE_CHANNEL_URL = "https://whatsapp.com/channel/0029Vb8YkYEFSAt4GoI9fZ2h"
+
 DATA_FILE = "course_files.json"  # نسخة محلية احتياطية/لترحيل البيانات القديمة
 
 
@@ -447,7 +464,7 @@ def main_reply_keyboard():
         ["📚 الكتب والتجميعات والملخصات والخطط الدراسية"],          
         ["دليل طلبة الجامعة الإلكترونية"],          
         ["🎓 خدمة الحلول", "📅 التقويم الأكاديمي 1448"],
-        ["💬 للاستفسارات والرد على اسئلتكم ومتابعة المستجدات"]
+        ["👥 قروبات التحضيري والتخصص"]
     ], resize_keyboard=True, input_field_placeholder="اختر من القائمة أدناه 👇")          
 
 def colleges_reply_keyboard():
@@ -592,6 +609,24 @@ def math_hw_reply_keyboard():
         ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
     ], resize_keyboard=True, input_field_placeholder="اختر الواجب المطلوب 👇")
 
+def study_groups_reply_keyboard():
+    return ReplyKeyboardMarkup([
+        ["قروبات التحضيري"],
+        ["قروبات التخصص"],
+        ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
+    ], resize_keyboard=True, input_field_placeholder="اختر القروبات المطلوبة 👇")
+
+def specialty_groups_reply_keyboard():
+    return ReplyKeyboardMarkup([
+        ["قروبات كلية العلوم الإدارية"],
+        ["قروبات كلية الحوسبة والمعلوماتية"],
+        ["قروبات كلية العلوم الصحية"],
+        ["قروبات كلية العلوم والدراسات النظرية"],
+        ["💬 قروب الاستفسارات"],
+        ["📢 أرشيف التخصص"],
+        ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
+    ], resize_keyboard=True, input_field_placeholder="اختر الكلية المطلوبة 👇")
+
 def student_guide_reply_keyboard():
     return ReplyKeyboardMarkup([
         ["دليل التسجيل", "دليل الأنظمة والخدمات الإلكترونية"],
@@ -630,7 +665,7 @@ def freshmen_guide_reply_keyboard():
         ["قروب الاستفسارات للمستجدين"],
         ["مواصفات اللابتوب المطلوب", "طريقة تفعيل الحساب الجامعي"],
         ["خطوات تفعيل البريد الجامعي", "طريقة حضور المحاضرات"],
-        ["شروط معادلة المواد", "ستيب - STEP"],
+        ["شروط معادلة المواد", "استخدام البلاكبورد"],
         ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
     ], resize_keyboard=True, input_field_placeholder="اختر دليل المستجدين المطلوب 👇")
 
@@ -789,9 +824,8 @@ async def show_main_menu(chat_id, context, bot):
 # =========================================================          
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):          
-    if not await check_user_access(update, context):          
-        await send_subscription_message(update, context)          
-        return          
+    # إلغاء شرط الانضمام عند الضغط على /start
+    # يمكن للمستخدم الدخول إلى القائمة الرئيسية مباشرة.
     context.user_data.pop("waiting_for_file", None)
     await show_main_menu(update.effective_chat.id, context, context.bot)
 
@@ -962,14 +996,97 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    if text == "💬 للاستفسارات والرد على اسئلتكم ومتابعة المستجدات":
-        inquiry_kb = InlineKeyboardMarkup([
-            [InlineKeyboardButton("💬 قروب الاستفسارات", url=INQUIRIES_GROUP_URL)],
-            [InlineKeyboardButton("📰 قروب الأخبار الهامة والمساعدات", url=NEWS_GROUP_URL)]
+    if text in ["👥 قروبات التحضيري & التخصص", "👥 قروبات التحضيري والتخصص"]:
+        context.user_data["menu_state"] = "study_groups"
+        await update.message.reply_text(
+            "👥 قروبات التحضيري والتخصص\n\nاختر القسم الذي تريد الوصول إلى قروباته:",
+            reply_markup=study_groups_reply_keyboard()
+        )
+        return
+
+    if text == "قروبات التحضيري":
+        prep_groups_kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("💬 قروب الاستفسارات", url=PREP_INQUIRIES_GROUP_URL)],
+            [InlineKeyboardButton("📢 أرشيف التحضيري", url=PREP_ARCHIVE_CHANNEL_URL)]
         ])
         await update.message.reply_text(
-            "اختر المجموعة التي تريد الوصول إليها:",
+            "🎓 قروبات التحضيري 👇\n\nاختر المجموعة التي تريد الانضمام إليها:",
+            reply_markup=prep_groups_kb
+        )
+        return
+
+    if text == "قروبات التخصص":
+        context.user_data["menu_state"] = "specialty_groups"
+        await update.message.reply_text(
+            "👥 قروبات التخصص\n\nاختر الكلية المطلوبة:",
+            reply_markup=specialty_groups_reply_keyboard()
+        )
+        return
+
+    if text == "قروبات كلية العلوم الإدارية":
+        admin_groups_kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("🛒 التجارة الإلكترونية", url=ADMIN_ECOMMERCE_GROUP_URL)],
+            [InlineKeyboardButton("📊 المحاسبة", url=ADMIN_ACCOUNTING_GROUP_URL)],
+            [InlineKeyboardButton("📈 المالية", url=ADMIN_FINANCE_GROUP_URL)],
+            [InlineKeyboardButton("💼 إدارة الأعمال", url=ADMIN_BUSINESS_GROUP_URL)]
+        ])
+        await update.message.reply_text(
+            "📚 قروبات كلية العلوم الإدارية والمالية 👇\n\n━━━━━━━━━━━━━━\n\nاختر التخصص المطلوب:",
+            reply_markup=admin_groups_kb
+        )
+        return
+
+    if text == "قروبات كلية الحوسبة والمعلوماتية":
+        computing_groups_kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("💻 تقنية المعلومات IT", url=IT_GROUP_URL)],
+            [InlineKeyboardButton("📊 علوم بيانات DS", url=DS_GROUP_URL)],
+            [InlineKeyboardButton("💻 علوم الحاسب CS", url=CS_GROUP_URL)]
+        ])
+        await update.message.reply_text(
+            "📚 قروبات كلية الحوسبة والمعلوماتية 👇\n\n━━━━━━━━━━━━━━\n\nاختر التخصص المطلوب:",
+            reply_markup=computing_groups_kb
+        )
+        return
+
+    if text == "قروبات كلية العلوم الصحية":
+        health_groups_kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("🩺 قروب كلية العلوم الصحية", url=HEALTH_GROUP_URL)]
+        ])
+        await update.message.reply_text(
+            "📚 قروب كلية العلوم الصحية 👇",
+            reply_markup=health_groups_kb
+        )
+        return
+
+    if text == "💬 قروب الاستفسارات":
+        inquiry_kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("💬 الانضمام لقروب الاستفسارات", url=THEORY_INQUIRIES_GROUP_URL)]
+        ])
+        await update.message.reply_text(
+            "💬 قروب الاستفسارات\n\nللاستفسارات وطرح الأسئلة ومتابعة ما يخص الطلاب، انضم إلى القروب من الزر أدناه:",
             reply_markup=inquiry_kb
+        )
+        return
+
+    if text == "📢 أرشيف التخصص":
+        archive_kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("📢 الانضمام إلى أرشيف التخصص", url=THEORY_ARCHIVE_CHANNEL_URL)]
+        ])
+        await update.message.reply_text(
+            "📢 أرشيف التخصص\n\nانضم إلى أرشيف التخصص ليصلك كل جديد أولًا بأول 🔔",
+            reply_markup=archive_kb
+        )
+        return
+
+    if text == "قروبات كلية العلوم والدراسات النظرية":
+        theory_groups_kb = InlineKeyboardMarkup([
+            [InlineKeyboardButton("⚖️ القانون", url=LAW_GROUP_URL)],
+            [InlineKeyboardButton("📝 لغة وترجمة", url=TRANSLATION_GROUP_URL)],
+            [InlineKeyboardButton("📺 الإعلام الرقمي", url=DIGITAL_MEDIA_GROUP_URL)]
+        ])
+        await update.message.reply_text(
+            "📚 قروبات كلية العلوم والدراسات النظرية 👇\n\n━━━━━━━━━━━━━━\n\nاختر التخصص أو المجموعة المطلوبة:",
+            reply_markup=theory_groups_kb
         )
         return
 
@@ -1247,7 +1364,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "خطوات تفعيل البريد الجامعي": "guide_university_email",
         "طريقة حضور المحاضرات": "guide_lectures",
         "شروط معادلة المواد": "guide_equivalency",
-        "ستيب - STEP": "guide_step"
+        "استخدام البلاكبورد": "guide_blackboard"
     }
     
     if text in systems_map:
