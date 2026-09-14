@@ -521,13 +521,14 @@ async def send_subscription_message(update, context):
 # تصميم لوحات المفاتيح السفلية (Reply Keyboards)
 # =========================================================          
          
-def main_reply_keyboard():          
-    return ReplyKeyboardMarkup([          
-        ["📚 الكتب والتجميعات والملخصات والخطط الدراسية"],          
-        ["دليل طلبة الجامعة الإلكترونية"],          
-        ["🎓 خدمة الحلول", "📅 التقويم الأكاديمي 1448"],
-        ["👥 قروبات التحضيري والتخصص"]
-    ], resize_keyboard=True, input_field_placeholder="اختر من القائمة أدناه 👇")          
+def main_reply_keyboard():
+    # القائمة الرئيسية فقط — بقية القوائم والوظائف والبيانات كما هي.
+    return ReplyKeyboardMarkup([
+        ["كلية العلوم الإدارية والمالية", "كلية الحوسبة والمعلوماتية"],
+        ["كلية العلوم الصحية", "كلية الدراسات النظرية"],
+        ["مواد السلم - ISLAM"],
+        ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
+    ], resize_keyboard=True, input_field_placeholder="اختر الكلية أو القسم المطلوب 👇")
 
 def colleges_reply_keyboard():
     return ReplyKeyboardMarkup([
@@ -915,7 +916,7 @@ async def show_main_menu(chat_id, context, bot):
     await bot.send_message(chat_id=chat_id, text=text, reply_markup=archive_kb, disable_web_page_preview=True)
     await bot.send_message(
         chat_id=chat_id,
-        text="ابدأ باختيار القسم من القائمة 👇",
+        text="التحضيري",
         reply_markup=main_reply_keyboard()
     )
 
