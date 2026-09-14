@@ -140,9 +140,11 @@ def load_course_files():
 
 
 def save_course_files():
+    """حفظ ملفات البوت بشكل دائم مع إرجاع نتيجة الحفظ."""
     if DATABASE_URL:
-        conn = _db_connect()
+        conn = None
         try:
+            conn = _db_connect()
             with conn.cursor() as cur:
                 cur.execute("""
                     INSERT INTO bot_storage (id, data, updated_at)
@@ -151,19 +153,79 @@ def save_course_files():
                     SET data = EXCLUDED.data, updated_at = NOW()
                 """, (Json(COURSE_FILES),))
                 conn.commit()
-            return
+            print("✅ تم حفظ بيانات الملفات في PostgreSQL")
+            return True
         except Exception as e:
-            conn.rollback()
+            if conn:
+                conn.rollback()
             print(f"❌ Error saving data to PostgreSQL: {e}")
+            return False
         finally:
-            conn.close()
-        return
+            if conn:
+                conn.close()
 
     try:
         with open(DATA_FILE, "w", encoding="utf-8") as f:
             json.dump(COURSE_FILES, f, ensure_ascii=False, indent=4)
+        print("✅ تم حفظ بيانات الملفات في course_files.json")
+        return True
     except Exception as e:
-        print(f"Error saving data: {e}")
+        print(f"❌ Error saving data: {e}")
+        return False
+
+
+def load_service_files_from_db(course_id, service):
+    """
+    قراءة ملفات المقرر مباشرة من PostgreSQL عند طلب الطالب.
+    هذا يمنع استخدام نسخة قديمة من COURSE_FILES إذا كان هناك أكثر
+    من عملية/نسخة للبوت تعمل في Render.
+    """
+    if not DATABASE_URL:
+        return None
+
+    conn = None
+    try:
+        conn = _db_connect()
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT data -> %s -> %s FROM bot_storage WHERE id = 1",
+                (course_id, service),
+            )
+            row = cur.fetchone()
+
+        if not row or row[0] is None:
+            return []
+
+        value = row[0]
+
+        if isinstance(value, list):
+            return value
+
+        if isinstance(value, dict):
+            if isinstance(value.get("files"), list):
+                return value["files"]
+            if value.get("file_id"):
+                return [value]
+
+        return []
+    except Exception as e:
+        print(f"⚠️ تعذر قراءة ملفات {course_id}/{service} من PostgreSQL: {e}")
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+
+def normalize_service_files(value):
+    """تحويل صيغ الملفات القديمة إلى قائمة موحدة بدون حذف المحتوى."""
+    if isinstance(value, list):
+        return value
+    if isinstance(value, dict):
+        if isinstance(value.get("files"), list):
+            return value["files"]
+        if value.get("file_id"):
+            return [value]
+    return []
 
 
 init_database()
@@ -760,8 +822,14 @@ async def send_service_files(update, context, course_id, course_name, service):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
 
-    course_files = COURSE_FILES.get(course_id, {})
-    file_list = course_files.get(service, [])
+    # قراءة أحدث نسخة من PostgreSQL عند ضغط الطالب على زر الكتاب/الملخص/التجميعات.
+    # إذا تعذر الاتصال، نستخدم النسخة الموجودة في الذاكرة كاحتياط.
+    db_file_list = load_service_files_from_db(course_id, service)
+    if db_file_list is None:
+        course_files = COURSE_FILES.get(course_id, {})
+        file_list = normalize_service_files(course_files.get(service, []))
+    else:
+        file_list = normalize_service_files(db_file_list)
 
     if not file_list:
         msg_text = f"📁 {course_name}\n\nلا توجد ملفات مضافة لهذا القسم حالياً."
@@ -770,26 +838,61 @@ async def send_service_files(update, context, course_id, course_name, service):
         await update.message.reply_text(msg_text, parse_mode="Markdown")
         return
 
+    sent_any = False
+
     for idx, item in enumerate(file_list):
+        if not isinstance(item, dict):
+            continue
+
         f_id = item.get("file_id")
         f_type = item.get("type", "document")
         caption = item.get("caption", "")
 
+        if not f_id:
+            print(f"⚠️ ملف بدون file_id في {course_id}/{service} - index {idx}")
+            continue
+
         try:
             markup = None
             if user_id == ADMIN_ID:
-                markup = InlineKeyboardMarkup([[InlineKeyboardButton(f"🗑️ حذف هذا الملف ({idx+1})", callback_data=f"del_course:{course_id}:{service}:{idx}")]])
+                markup = InlineKeyboardMarkup([
+                    [InlineKeyboardButton(
+                        f"🗑️ حذف هذا الملف ({idx + 1})",
+                        callback_data=f"del_course:{course_id}:{service}:{idx}"
+                    )]
+                ])
 
             if f_type == "photo":
-                await context.bot.send_photo(chat_id=chat_id, photo=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
+                await context.bot.send_photo(
+                    chat_id=chat_id, photo=f_id, caption=caption or None,
+                    reply_markup=markup
+                )
             elif f_type == "video":
-                await context.bot.send_video(chat_id=chat_id, video=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
+                await context.bot.send_video(
+                    chat_id=chat_id, video=f_id, caption=caption or None,
+                    reply_markup=markup
+                )
             elif f_type == "audio":
-                await context.bot.send_audio(chat_id=chat_id, audio=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
+                await context.bot.send_audio(
+                    chat_id=chat_id, audio=f_id, caption=caption or None,
+                    reply_markup=markup
+                )
             else:
-                await context.bot.send_document(chat_id=chat_id, document=f_id, caption=caption, parse_mode="Markdown", reply_markup=markup)
-        except Exception as error:          
-            print(f"Error sending service file: {error}")
+                await context.bot.send_document(
+                    chat_id=chat_id, document=f_id, caption=caption or None,
+                    reply_markup=markup
+                )
+
+            sent_any = True
+
+        except Exception as error:
+            print(f"❌ Error sending service file {course_id}/{service}: {error}")
+
+    if not sent_any:
+        await update.message.reply_text(
+            "⚠️ تم العثور على بيانات الملف، لكن تعذر إرساله من Telegram.\n"
+            "تحقق من سجل Render لمعرفة الخطأ."
+        )
 
 
 # =========================================================          
@@ -911,28 +1014,41 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             return
 
-        course_id = target["course_id"]          
-        service = target["service"]          
-      
-        if course_id not in COURSE_FILES:          
-            COURSE_FILES[course_id] = {}          
-        if service not in COURSE_FILES[course_id]:          
-            COURSE_FILES[course_id][service] = []          
-            
-        COURSE_FILES[course_id][service].append({
-            "file_id": file_id, 
-            "type": file_type, 
-            "caption": caption
-        })          
-        save_course_files()
-        
-        total_files = len(COURSE_FILES[course_id][service])          
-        await update.message.reply_text(          
-            f"✅ **تم الحفظ بنجاح!** (إجمالي الملفات هنا: {total_files})\n\n🔑 **معرف الملف (file_id):**\n`{file_id}`",          
-            parse_mode="Markdown"          
-        )          
-        return          
+        course_id = target["course_id"]
+        service = target["service"]
 
+        if course_id not in COURSE_FILES:
+            COURSE_FILES[course_id] = {}
+
+        # توحيد صيغة القسم قبل الإضافة حتى تبقى الملفات القديمة قابلة للقراءة.
+        existing_files = normalize_service_files(
+            COURSE_FILES[course_id].get(service, [])
+        )
+        COURSE_FILES[course_id][service] = existing_files
+
+        COURSE_FILES[course_id][service].append({
+            "file_id": file_id,
+            "type": file_type,
+            "caption": caption
+        })
+
+        saved = save_course_files()
+
+        if not saved:
+            await update.message.reply_text(
+                "⚠️ تعذر حفظ الملف في قاعدة البيانات.\n\n"
+                "لم يتم حذف الملف من الذاكرة الحالية، لكن لا تقم بإعادة تشغيل البوت "
+                "حتى يتم إصلاح اتصال قاعدة البيانات."
+            )
+            return
+
+        total_files = len(COURSE_FILES[course_id][service])
+        await update.message.reply_text(
+            f"✅ **تم الحفظ بنجاح!** (إجمالي الملفات هنا: {total_files})\n\n"
+            f"🔑 **معرف الملف (file_id):**\n`{file_id}`",
+            parse_mode="Markdown"
+        )
+        return
     if user_id == ADMIN_ID:
         context.user_data.pop("waiting_for_file", None)
 
