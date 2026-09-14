@@ -522,13 +522,15 @@ async def send_subscription_message(update, context):
 # =========================================================          
          
 def main_reply_keyboard():
-    # القائمة الرئيسية فقط — بقية القوائم والوظائف والبيانات كما هي.
+    # القائمة الرئيسية الجديدة: أقسام البوت فقط.
+    # جميع القوائم الداخلية والخدمات والملفات تبقى كما هي.
     return ReplyKeyboardMarkup([
+        ["🎓 التحضيري"],
         ["كلية العلوم الإدارية والمالية", "كلية الحوسبة والمعلوماتية"],
         ["كلية العلوم الصحية", "كلية الدراسات النظرية"],
         ["مواد السلم - ISLAM"],
         ["⬅️ رجوع", "🏠 القائمة الرئيسية"]
-    ], resize_keyboard=True, input_field_placeholder="اختر الكلية أو القسم المطلوب 👇")
+    ], resize_keyboard=True, input_field_placeholder="اختر القسم المطلوب 👇")
 
 def colleges_reply_keyboard():
     return ReplyKeyboardMarkup([
@@ -916,7 +918,7 @@ async def show_main_menu(chat_id, context, bot):
     await bot.send_message(chat_id=chat_id, text=text, reply_markup=archive_kb, disable_web_page_preview=True)
     await bot.send_message(
         chat_id=chat_id,
-        text="التحضيري",
+        text="ابدأ باختيار القسم من القائمة 👇",
         reply_markup=main_reply_keyboard()
     )
 
@@ -1213,7 +1215,7 @@ async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # الكليات
-    if text == "التحضيري":
+    if text in ["التحضيري", "🎓 التحضيري"]:
         context.user_data["menu_state"] = "prep"
         await update.message.reply_text("🎓 التحضيري\n\nاختر الخطة المطلوبة:", reply_markup=preparatory_reply_keyboard())
         return
